@@ -1,25 +1,16 @@
-function solution(마트에주는병개수, 마트가주는새콜라개수, 빈병개수) {
-    let 킵 = 0;
-    let 먹은콜라 = 0;
-    
+function solution (need, refill, have) {
+    let cola = 0;
     while(1) {
-        빈병개수+=킵;
-        if(빈병개수 < 마트에주는병개수) break;
-        
-        if(빈병개수 % 마트에주는병개수 === 0) {
-            킵=0;
-            const 세트 = 빈병개수/마트에주는병개수;
-            빈병개수 = 마트가주는새콜라개수*세트;
-            먹은콜라+=빈병개수;
-        }
-        else {
-            //남는다면
-            const 세트 = Math.floor(빈병개수/마트에주는병개수);
-            킵 = 빈병개수 % 마트에주는병개수;
-            빈병개수 = 마트가주는새콜라개수*세트;
-            먹은콜라+=빈병개수;
+        if(have < need) break;
+        if(have % need === 0) {
+            have = (have/need)*refill;
+            cola += have;
+        } else {
+            const keep = have % need;
+            have = Math.floor(have/need)*refill;
+            cola += have;
+            have += keep;
         }
     }
-    return 먹은콜라;
+    return cola;
 }
-

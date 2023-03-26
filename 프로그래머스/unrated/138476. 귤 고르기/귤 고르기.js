@@ -1,22 +1,26 @@
 function solution(k, tangerine) {
-    const set = new Set([...tangerine.sort((a, b) => a - b)]);
-    const arr = []; // 해당 크기의 귤 개수
-    set.forEach(n => arr.push(getCount(tangerine, n)));
-
+    const set = new Set([...tangerine]);
+    const arr = [...set]; // 해당 크기의 귤 개수
+    console.log(arr);
+    
+    const sortArr = [];
+    
+    arr.forEach(n => sortArr.push(getCount(tangerine, n)));
+    
     let tans = 0;
     let count = 0;
     
+    sortArr.sort((a,b) => a-b);
+    
     while(tans < k) {
-        tans += Math.max(...arr);
+        tans += sortArr[sortArr.length - 1];
+        sortArr.pop();
         count++;
     }
     
     return count;
 }
 
-/*
-1,2,2,3,3,4,5,5 -> 1,4,
-*/
 
 const getCount = (a, n) => {
     let count = 0;

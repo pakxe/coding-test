@@ -2,27 +2,27 @@ function solution(players, callings) {
     const nameKeyMap = new Map();
     const scoreKeyMap = new Map();
     
-    players.forEach((player, i) => {
+    players.forEach((player, i) => { // 1
         nameKeyMap.set(player, i);
         scoreKeyMap.set(i, player);
-    }) // 이름과 순서 모두 맵으로
+    }) 
     
-    callings.forEach((추월자) => {
-        const 추월자의순위 = nameKeyMap.get(추월자);
-        const 추월당할자의이름 = scoreKeyMap.get(추월자의순위 - 1);
+    callings.forEach((추월자) => { // 2
+        const 추월자의순위 = nameKeyMap.get(추월자); // 2
+        const 추월당할자의이름 = scoreKeyMap.get(추월자의순위 - 1); // 3
         
-        nameKeyMap.set(추월자, 추월자의순위 - 1);
-        nameKeyMap.set(추월당할자의이름, 추월자의순위);
+        nameKeyMap.set(추월당할자의이름, 추월자의순위); // 4
+        nameKeyMap.set(추월자, 추월자의순위 - 1); // 5
         
-        scoreKeyMap.set(추월자의순위 - 1, 추월자);
-        scoreKeyMap.set(추월자의순위, 추월당할자의이름);
+        scoreKeyMap.set(추월자의순위, 추월당할자의이름); // 6
+        scoreKeyMap.set(추월자의순위 - 1, 추월자); // 7
     })
     
-    const scoreArr = Array.from(scoreKeyMap);
+    const scoreArr = Array.from(scoreKeyMap); // sort하기위해 map을 배열로 변환
     
-    scoreArr.sort((a, b) => a[0] - b[0]);
+    scoreArr.sort((a, b) => a[0] - b[0]); // 순위 오름차순으로 sort
     
-    return scoreArr.map(([_, name]) => name);
+    return scoreArr.map(([_, name]) => name); // 이름만 return
 }
 
 

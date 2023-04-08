@@ -11,7 +11,7 @@ function solution(record) {
         
         if(command !== CHANGE) result.push([command, userId]);
         
-        if(command !== LEAVE) map[userId] = nickName;
+        if(nickName) map[userId] = nickName;
     })
     
     return result.map(([type, userId]) => {

@@ -9,21 +9,14 @@ function solution(record) {
     record.forEach((line) => {
         const [command, userId, nickName] = line.split(' ');
         
-        if(command === ENTER) {
-            map[userId] = nickName;
-            result.push([IS_ENTER, userId]);
-        }
-        else if(command === LEAVE) {
-            result.push([IS_LEAVE, userId]);   
-        }
-        else {
-            map[userId] = nickName;
-        }
+        if(command !== CHANGE) result.push([command, userId]);
+        
+        if(command !== LEAVE) map[userId] = nickName;
     })
     
     return result.map(([type, userId]) => {
-        if(type === IS_ENTER) return map[userId] + WELCOME;
-        if(type === IS_LEAVE) return map[userId] + GOODBYE;
+        if(type === ENTER) return map[userId] + WELCOME;
+        if(type === LEAVE) return map[userId] + GOODBYE;
     })
 }
 

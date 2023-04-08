@@ -1,30 +1,55 @@
+// function solution(players, callings) {
+//     const nameKeyMap = new Map();
+//     const scoreKeyMap = new Map();
+    
+//     players.forEach((player, i) => { // 1
+//         nameKeyMap.set(player, i);
+//         scoreKeyMap.set(i, player);
+//     }) 
+    
+//     callings.forEach((추월자) => { // 2
+//         const 추월자의순위 = nameKeyMap.get(추월자); // 2
+//         const 추월당할자의이름 = scoreKeyMap.get(추월자의순위 - 1); // 3
+        
+//         nameKeyMap.set(추월당할자의이름, 추월자의순위); // 4
+//         nameKeyMap.set(추월자, 추월자의순위 - 1); // 5
+        
+//         scoreKeyMap.set(추월자의순위, 추월당할자의이름); // 6
+//         scoreKeyMap.set(추월자의순위 - 1, 추월자); // 7
+//     })
+    
+//     const scoreArr = Array.from(scoreKeyMap); // sort하기위해 map을 배열로 변환
+    
+//     scoreArr.sort((a, b) => a[0] - b[0]); // 순위 오름차순으로 sort
+    
+//     return scoreArr.map(([_, name]) => name); // 이름만 return
+// }
+
 function solution(players, callings) {
-    const nameKeyMap = new Map();
-    const scoreKeyMap = new Map();
+    const nameKey = {};
     
-    players.forEach((player, i) => { // 1
-        nameKeyMap.set(player, i);
-        scoreKeyMap.set(i, player);
-    }) 
+    players.forEach((player, i) => nameKey[player] = i);
     
-    callings.forEach((추월자) => { // 2
-        const 추월자의순위 = nameKeyMap.get(추월자); // 2
-        const 추월당할자의이름 = scoreKeyMap.get(추월자의순위 - 1); // 3
+    callings.forEach(추월자 => {
+        const 추월자의순위 = nameKey[추월자];
+        const 추월당하는자 = players[추월자의순위 - 1];
         
-        nameKeyMap.set(추월당할자의이름, 추월자의순위); // 4
-        nameKeyMap.set(추월자, 추월자의순위 - 1); // 5
+        players[추월자의순위] = 추월당하는자;
+        players[추월자의순위 - 1] = 추월자;
         
-        scoreKeyMap.set(추월자의순위, 추월당할자의이름); // 6
-        scoreKeyMap.set(추월자의순위 - 1, 추월자); // 7
+        nameKey[추월자]--;
+        nameKey[추월당하는자]++;
     })
     
-    const scoreArr = Array.from(scoreKeyMap); // sort하기위해 map을 배열로 변환
+    const arr = [];
     
-    scoreArr.sort((a, b) => a[0] - b[0]); // 순위 오름차순으로 sort
+    for (let name in nameKey) {
+        arr.push([nameKey[name], name]);
+    }
     
-    return scoreArr.map(([_, name]) => name); // 이름만 return
-}
+    return arr.sort((a, b) => a[0] - b[0]).map(([_, name]) => name);
 
+}
 
 
     

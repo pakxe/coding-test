@@ -1,30 +1,28 @@
-function solution(number, k) {
-    let result = '';
-    let cursor = 0;
+const solution = (number, k) => {
+    const stack = [];
     
-    while(!(k === 0 || result.length === number.length - k)) {
-        let max = 0;
-        let relativeIndex = 0;
+    for(let i = 0 ; i < number.length; i++) {
+        const num = Number(number[i]);
         
-        console.log(cursor);
-        
-        for(let i = 0; i <= k; i++) {
-            if(Number(number[cursor + i]) === 9) {
-                relativeIndex = i;
-                max = 9;
-                break;
-            }
+        if(stack.length === 0) {
+            stack.push(num);
             
-            if(max < Number(number[cursor + i])) {
-                max = Number(number[cursor + i])
-                relativeIndex = i;
-            }
+            continue;
         }
         
-        cursor = cursor + relativeIndex + 1;
-        result += max;
-        k -= relativeIndex;
+        while(stack[stack.length - 1] < num) { // 현재 숫자보다 작은 숫자들 제거       
+            if(k === 0) break; // 더이상 제거할 수 없거나
+            if(stack.length === 0) break; // 스택이 비어있다면 중지
+            stack.pop();
+            k--;
+        }
+        stack.push(num);
     }
     
-    return result.length === number.length - k ? result : result += number.substring(cursor)
+    return stack.join('').substr(0, number.length - k);
 }
+
+/*
+결국 큰 수를 스택에 남기는 방법이다. 이때 최대 
+*/
+

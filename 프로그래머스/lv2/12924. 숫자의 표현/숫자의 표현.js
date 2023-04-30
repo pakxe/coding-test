@@ -1,21 +1,26 @@
 function solution(n) {
-    let answer = 0;
-    let N = 1;
+    let count = 0;
+    const stack = [];
+    let sum = 0;
+    const until = Math.ceil(n/2) + 1;
     
-    while( n > 0 ) {
-        n = n - N;
-        if(!(n % N)) answer++;
-        N++;
+    for(let i = 1; i <= until; i++) {
+        if(sum === n) count += 1;
+        
+        stack.push(i);
+        sum += i;
+        
+        while(sum > n) {
+            const deletedNum = stack.shift();
+            sum -= deletedNum;
+        }
     }
     
-    return answer;
+    if(n!==1) count+=1;
+    return count;
 }
 
-/*
-    n이 자연수면 연속된 자연수의 합으로 표현이 가능하다는 의미
-    1 부터 시작 -> 1 + 1n = 15, 1n = 14, n = 14
-    2 -> 1 + 2 + 2n = 15, 2n = 12, n = 6
-    3 -> 1 + 2 + 3 + 3n = 15, 3n = 9, n = 3
-    ...
-    
-*/
+console.log(solution(1))
+console.log(solution(3))
+console.log(solution(2))
+

@@ -1,12 +1,20 @@
 function solution(n) {
-    let answer = 0;
-    let N = 1;
+    let count = 0;
+    const stack = [];
+    let sum = 0;
     
-    while( n > 0 ) {
-        n = n - N;
-        if(!(n % N)) answer++;
-        N++;
+    for(let i = 1; i <= n + 1; i++) {
+        if(sum === n) count += 1;
+        
+        stack.push(i);
+        sum += i;
+        
+        while(sum > n) {
+            const deletedNum = stack.shift();
+            sum -= deletedNum;
+        }
     }
     
-    return answer;
+    return count;
 }
+

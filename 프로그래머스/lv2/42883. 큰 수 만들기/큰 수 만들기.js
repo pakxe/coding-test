@@ -2,7 +2,6 @@ function solution(number, k) {
     const stack = [];
     let deleteCount = 0;
     stack.push(number[0]);
-    console.log(stack);
     
     for(let i = 1; i < number.length; i++) {
         while(deleteCount < k && stack[stack.length - 1] < number[i]) {

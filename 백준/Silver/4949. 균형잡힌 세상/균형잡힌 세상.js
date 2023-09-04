@@ -1,44 +1,34 @@
-const fs = require("fs");
-let arr = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+const fs = require('fs');
+// let input = fs.readFileSync('e.txt').toString().trim().split('\n');
+let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+// const LINE_COUNT = parseInt(input.shift());
 
-let stack = [];
-let stop = false;
-let result = false;
-let con = "";
-for (let i = 0; i < arr.length - 1; i++) {
-  // 문장들
-  stop = false;
-  stack = []; // 스택 비우기
-  let str = arr[i];
-  for (let j = 0; j < str.length; j++) {
-    // 문장 내부
-    if (str[j] === "(") {
-      // 열린 괄호
-      stack.push("(");
-    }
-    if (str[j] === "[") {
-      // 열린 괄호
-      stack.push("[");
-    }
-    if (str[j] === ")") {
-      if (stack.length === 0 || stack[stack.length - 1] !== "(") {
-        stop = true;
-        break;
-      } else {
-        stack.pop();
-      }
-    }
-    if (str[j] === "]") {
-      if (stack.length === 0 || stack[stack.length - 1] !== "[") {
-        stop = true;
-        break;
-      } else {
-        stack.pop();
-      }
-    }
-  }
-  if (stack.length !== 0 || stop === true) console.log("no");
-  else console.log("yes");
+const OPEN = ['(', '['];
+const CLOSE = [')', ']'];
+
+const SUCCESS = 'yes';
+const FAIL = 'no';
+
+const isValidPS = (str) => {
+	const stack = [];
+
+	for (let i = 0; i < str.length; i++) {
+		if (OPEN.includes(str[i])) stack.push(str[i]);
+		if (CLOSE.includes(str[i])) {
+			const stackTop = stack[stack.length - 1];
+
+			if (stack.length === 0) return false;
+
+			if (stackTop === OPEN[0] && str[i] === CLOSE[0]) stack.pop();
+			else if (stackTop === OPEN[1] && str[i] === CLOSE[1]) stack.pop();
+			else return false;
+		}
+	}
+
+	return stack.length !== 0 ? false : true;
+};
+
+for (let i = 0; i < input.length; i++) {
+	if (input[i] === '.') return;
+	console.log(isValidPS(input[i]) ? SUCCESS : FAIL);
 }
-
-// 스택이 안비어있으면 false, 또는 스택이 비어있으면서

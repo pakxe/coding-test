@@ -1,80 +1,60 @@
-const filePath = process.platform === 'linux' ? '/dev/stdin' : './input.txt';
-const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
+const fs = require('fs');
+// let input = fs.readFileSync('e.txt').toString().trim().split('\n');
+let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+const rowCount = parseInt(input.shift());
 
-const size = parseInt(input.shift()); // 맵 사이즈
-const map = input.map((location) => location.split(' ').map(Number)); // 맵 정보
+for (let i = 0; i < rowCount; i++) {
+	input[i] = input[i].split(' ').map(Number);
+}
 
-// 맵에서 최소, 최댓값을 반환하는 함수
-const getMinMax = (map) => [Math.min(...map.flat()), Math.max(...map.flat())];
+const bfs = (map, start, rain, visited) => {
+	const queue = [];
 
-// const a = JSON.parse(JSON.stringify(map));
-const [VISITED, NEED_VISIT] = [0, 1];
+	let count = 0;
 
-const bfs = (graph, start) => {
-  const dx = [0, 1, 0, -1];
-  const dy = [1, 0, -1, 0];
+	queue.push(start);
 
-  const needVisit = [start];
+	while (queue.length !== 0) {
+		const [ny, nx] = queue.shift(); // 앞에서 빼내기
 
-  while (needVisit.length) {
-    const [y, x] = needVisit.shift();
+		if (visited[ny][nx] === false) {
+			visited[ny][nx] = true;
 
-    if (graph[y][x] === NEED_VISIT) {
-      graph[y][x] = VISITED; // 방문
+			const around = [
+				[ny - 1, nx],
+				[ny, nx + 1],
+				[ny + 1, nx],
+				[ny, nx - 1],
+			];
 
-      for (let i = 0; i < dx.length; i++) {
-        const nx = x + dx[i];
-        const ny = y + dy[i];
+			for (let i = 0; i < 4; i++) {
+				const [y, x] = [around[i][0], around[i][1]];
 
-        if (nx >= 0 && ny >= 0 && nx < graph[0].length && ny < graph.length && graph[ny][nx] === NEED_VISIT) {
-          needVisit.push([ny, nx]);
-        }
-      }
-    }
-  }
+				if (!around[i].includes(-1) && !around[i].includes(rowCount)) {
+					if (!visited[y][x] && map[y][x] > rain) queue.push(around[i]);
+				}
+			}
+		}
+	}
 };
 
-const makeRainyMap = (map, height) => {
-  const rainyMap = Array(map.length)
-    .fill()
-    .map(() => Array(map[0].length).fill(0));
+let count = 0;
+let max = 0;
+for (let rain = 0; rain <= 100; rain++) {
+	const visited = new Array(rowCount)
+		.fill()
+		.map(() => new Array(rowCount).fill(false));
+	for (let i = 0; i < rowCount; i++) {
+		for (let j = 0; j < rowCount; j++) {
+			if (input[i][j] > rain && !visited[i][j]) {
+				bfs(input, [i, j], rain, visited);
+				count++;
+			}
+		}
+	}
 
-  for (let y = 0; y < map.length; y++) {
-    for (let x = 0; x < map[0].length; x++) {
-      if (map[y][x] <= height) rainyMap[y][x] = 0; // 잠긴다.
-      else rainyMap[y][x] = 1; // 살아남는다.
-    }
-  }
+	max = count > max ? count : max;
+	count = 0;
+}
 
-  return rainyMap;
-};
-
-const getMaxAreaCount = (map) => {
-  // const [min, max] = getMinMax(map);
-  const countArr = [];
-
-  for (let height = 0; height <= 100; height++) {
-    let count = 0;
-    const rainyMap = makeRainyMap(map, height);
-
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        if (rainyMap[y][x] === NEED_VISIT) {
-          bfs(rainyMap, [y, x]);
-          count++;
-        }
-      }
-    }
-
-    countArr.push(count);
-  }
-
-  if (countArr.length === 0) return 0;
-  return Math.max(...countArr);
-};
-
-console.log(getMaxAreaCount(map));
-/**
- * 비가 아예 안내리는 경우도 있나본데 땅이아니라 비의 높이가 height인거지
- * 땅이 다 1이고 물의 높이가 0이면 그냥 그게 1이되서 나올텐데?
- */
+console.log(max);

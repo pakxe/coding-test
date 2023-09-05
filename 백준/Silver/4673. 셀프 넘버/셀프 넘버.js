@@ -20,15 +20,12 @@ const getStrNumSum = (num) => {
 	return sum;
 };
 
-const selfNumArr = new Array(LIMIT + 1).fill(false);
+const selfNumArr = new Array(LIMIT + 1).fill().map((_, i) => i);
 
 for (let i = 1; i <= LIMIT; i++) {
-	selfNumArr[getStrNumSum(i)] = true;
+	selfNumArr[getStrNumSum(i)] = false;
 }
 
-const res = [];
-for (let i = 1; i <= LIMIT; i++) {
-	if (!selfNumArr[i]) res.push(i);
-}
+selfNumArr.shift();
 
-console.log(res.join('\n'));
+console.log(selfNumArr.filter((selfNum) => selfNum !== false).join('\n'));

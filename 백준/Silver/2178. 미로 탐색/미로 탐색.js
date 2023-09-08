@@ -4,44 +4,6 @@ let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
 const [row, col] = input[0].split(' ').map(Number);
 input.shift();
 
-class Queue {
-	constructor() {
-		this.storage = {};
-		this.front = 0;
-		this.rear = 0;
-	}
-	size() {
-		if (this.storage[this.rear] === undefined) {
-			return 0;
-		} else {
-			return this.rear - this.rear + 1;
-		}
-	}
-	push(value) {
-		if (this.size() === 0) {
-			this.storage['0'] = value;
-		} else {
-			this.rear += 1;
-			this.storage[this.rear] = value;
-		}
-	}
-
-	shift() {
-		let temp;
-		if (this.front === this.rear) {
-			temp = this.storage[this.front];
-			delete this.storage[this.front];
-			this.front = 0;
-			this.rear = 0;
-		} else {
-			temp = this.storage[this.front];
-			delete this.storage[this.front];
-			this.front += 1;
-		}
-		return temp;
-	}
-}
-
 const WAY = 1;
 const WALL = 0;
 const VISITED = 2;

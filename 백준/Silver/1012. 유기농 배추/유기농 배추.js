@@ -1,72 +1,65 @@
-const bfs = (graph, start) => {
-  const dx = [0, 1, 0, -1];
-  const dy = [1, 0, -1, 0];
+const fs = require('fs');
+// let input = fs.readFileSync('e.txt').toString().split('\n');
+let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+const testCaseCount = parseInt(input[0]);
 
-  const needVisit = [];
+const EMPTY = 0;
+const PLANT = 1;
 
-  needVisit.push(start);
+const DX = [0, 1, 0, -1];
+const DY = [1, 0, -1, 0];
 
-  while (needVisit.length !== 0) {
-    const [y, x] = needVisit.shift();
+const bfs = (start) => {
+	const queue = [];
 
-    if (graph[y][x] !== 0) {
-      graph[y][x] = 0;
+	queue.push(start);
 
-      for (let i = 0; i < dx.length; i++) {
-        const ny = y + dy[i];
-        const nx = x + dx[i];
+	while (queue.length > 0) {
+		const [y, x] = queue.shift();
 
-        if (ny >= 0 && nx >= 0 && ny <= graph.length - 1 && nx <= graph[0].length - 1 && graph[ny][nx] !== 0)
-          needVisit.push([ny, nx]);
-      }
-    }
-  }
+		if (map[y][x] !== EMPTY) {
+			map[y][x] = EMPTY; // 방문
+
+			for (let i = 0; i < DX.length; i++) {
+				if (
+					![-1, col].includes(x + DX[i]) &&
+					![-1, row].includes(y + DY[i]) &&
+					map[y + DY[i]][x + DX[i]] !== EMPTY
+				)
+					queue.push([y + DY[i], x + DX[i]]);
+			}
+		}
+	}
 };
 
-const fs = require('fs');
-// let input = fs.readFileSync('./input.txt').toString().trim().split('\n');
-let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-const testCount = parseInt(input[0]); // 컴퓨터 개수
-input.shift();
+let bugCount = new Array(testCaseCount).fill(0);
+let index = 1; // 밭크기
+let col, row, count;
+let map;
 
-let safeCount = [];
+for (let t = 0; t < testCaseCount; t++) {
+	[col, row, count] = input[index].split(' ').map(Number);
+	index++; // 테스트로 이동
 
-const fields = new Array(testCount + 1).fill().map(() => []); // 테스트 밭 개수
+	map = new Array(row).fill().map(() => new Array(col).fill(EMPTY));
 
-let nowField = 0;
+	let i;
+	for (i = index; i < index + count; i++) {
+		const [x, y] = input[i].split(' ').map(Number);
 
-for (let i = 0; i < input.length; i++) {
-  const command = input[i].split(' ').map(Number);
+		map[y][x] = PLANT; // 배추 심기
+	}
+	index = i; // 다음 밭크기
 
-  if (command.length === 3) {
-    nowField++; // 현재 배추 심을 밭 지정
-
-    const [width, height, plantCount] = command;
-
-    // 밭 생성
-    fields[nowField] = new Array(height + 1).fill().map(() => new Array(width + 1).fill(0));
-  } else {
-    const [x, y] = command;
-    fields[nowField][y][x] = 1;
-  }
+	// 맵돌기
+	for (let y = 0; y < row; y++) {
+		for (let x = 0; x < col; x++) {
+			if (map[y][x] === PLANT) {
+				bfs([y, x]);
+				bugCount[t]++;
+			}
+		}
+	}
 }
-// 모든 밭에 배추를 다 심은 상황
 
-fields.shift();
-
-const result = fields.map((field) => {
-  let bugs = 0;
-
-  for (let i = 0; i < field.length; i++) {
-    for (let j = 0; j < field[0].length; j++) {
-      if (field[i][j] !== 0) {
-        bfs(field, [i, j]);
-        bugs++;
-      }
-    }
-  }
-
-  return bugs;
-});
-
-console.log(result.join('\n'));
+console.log(bugCount.join('\n'));

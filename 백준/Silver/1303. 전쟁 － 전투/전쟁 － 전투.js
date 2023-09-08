@@ -1,50 +1,70 @@
-const filePath = process.platform === 'linux' ? '/dev/stdin' : './input.txt';
-const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
+const fs = require('fs');
+// let input = fs.readFileSync('e.txt').toString().split('\n');
+let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+const [col, row] = input[0].split(' ').map(Number);
+input.shift();
 
-const [width, height] = input.shift().split(' ').map(Number); // 행, 열 사이즈
-const map = input.map((location) => location.split('')); // 맵 정보
+/**
+visited를 만들지 않고 그냥 map에 덧씌우면 될 것 같다.
 
-const [VISIT, BLUE, WHITE] = ['X', 'B', 'W'];
+각 국의 병사들을 상수로 선언한다. 
+2중 for문으로 맵을 순회한다. 
+bfs는 군인 수를 반환한다. 
+반환된 N^2를 sum 해둔다. 
+아군일경우와 적군인 경우를 구분해서 더한다. 
 
-const bfs = (team, graph, start) => {
-  const dx = [0, 1, 0, -1];
-  const dy = [1, 0, -1, 0];
+*/
 
-  let count = 0;
+const OUR = 'W';
+const ENEMY = 'B';
+const VISITED = 'V'; // 이미 방문한 경우 이걸로 바꾼다.
 
-  const needVisit = [start];
+const DX = [0, 1, 0, -1];
+const DY = [1, 0, -1, 0];
 
-  while (needVisit.length) {
-    const [y, x] = needVisit.shift();
+const map = new Array(row).fill();
 
-    if (graph[y][x] !== VISIT) {
-      graph[y][x] = VISIT; // 방문
-      count++;
-
-      for (let i = 0; i < dx.length; i++) {
-        const nx = x + dx[i];
-        const ny = y + dy[i];
-
-        if (nx >= 0 && ny >= 0 && nx < graph[0].length && ny < graph.length && graph[ny][nx] === team) {
-          needVisit.push([ny, nx]);
-        }
-      }
-    }
-  }
-
-  return count;
-};
-
-let blueCost = 0;
-let whiteCost = 0;
-
-for (let y = 0; y < map.length; y++) {
-  for (let x = 0; x < map[0].length; x++) {
-    if (map[y][x] === WHITE) whiteCost += bfs(WHITE, map, [y, x]) ** 2;
-    if (map[y][x] === BLUE) blueCost += bfs(BLUE, map, [y, x]) ** 2;
-  }
+// 맵 만들기
+for (let i = 0; i < row; i++) {
+	map[i] = input[i].split('');
 }
 
-console.log(whiteCost, blueCost);
+const getPersonCount = (start, type) => {
+	const queue = [];
+	let personCount = 0;
 
+	queue.push(start);
 
+	while (queue.length > 0) {
+		const [y, x] = queue.shift();
+
+		if (map[y][x] !== VISITED) {
+			map[y][x] = VISITED;
+			personCount++;
+
+			for (let i = 0; i < DX.length; i++) {
+				if (
+					![-1, row].includes(y + DY[i]) &&
+					![-1, col].includes(x + DX[i]) &&
+					map[y + DY[i]][x + DX[i]] === type &&
+					map[y + DY[i]][x + DX[i]] !== VISITED
+				)
+					queue.push([y + DY[i], x + DX[i]]);
+			}
+		}
+	}
+	return personCount;
+};
+
+let ourPower = 0;
+let enemyPower = 0;
+
+for (let y = 0; y < row; y++) {
+	for (let x = 0; x < col; x++) {
+		if (map[y][x] === OUR) ourPower += Math.pow(getPersonCount([y, x], OUR), 2);
+		if (map[y][x] === ENEMY)
+			enemyPower += Math.pow(getPersonCount([y, x], ENEMY), 2);
+	}
+}
+
+console.log(ourPower, enemyPower);

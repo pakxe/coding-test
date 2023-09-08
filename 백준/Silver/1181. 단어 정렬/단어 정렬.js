@@ -1,21 +1,15 @@
-const fs = require("fs");
-const input = fs.readFileSync("/dev/stdin").toString().trim().split('\n');
-
+const fs = require('fs');
+// let input = fs.readFileSync('e.txt').toString().split('\n');
+let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+const wordCount = parseInt(input[0]);
 input.shift();
-let set = new Set(input);
-let arr = [...set];
 
-arr.sort(function(a, b) {
-    if(a.length < b.length) return -1;
-    if(a.length > b.length) return 1;
-    if(a.length === b.length) {
-        if(a < b) return -1;
-        if(a > b) return 1;
-        if(a === b) return 0;
-    }
-});
+const customSort = (a, b) => {
+	if (a.length > b.length) return 1;
+	if (a.length === b.length) {
+		return a < b ? -1 : 1;
+	}
+	if (a.length < b.length) return -1;
+};
 
-arr.forEach(e=>{
-    console.log(e);
-    
-})
+console.log([...new Set(input.sort(customSort))].join('\n'));

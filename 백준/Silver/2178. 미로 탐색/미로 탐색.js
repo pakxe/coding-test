@@ -56,10 +56,10 @@ for (let i = 0; i < input.length; i++) {
 }
 
 const bfs = () => {
-	const queue = new Queue();
+	const queue = [];
 	queue.push([0, 0, 1]);
 
-	while (queue.size() > 0) {
+	while (queue.length > 0) {
 		const [y, x, walkCount] = queue.shift();
 
 		if (map[y][x] !== VISITED) {

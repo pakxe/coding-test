@@ -1,37 +1,81 @@
 const fs = require('fs');
-// let input = fs.readFileSync('./input.txt').toString().trim().split('\n');
+//let input = fs.readFileSync('e.txt').toString().split('\n');
 let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-const [height, width] = input[0].split(' ').map(Number); // 컴퓨터 개수
+const [row, col] = input[0].split(' ').map(Number);
 input.shift();
 
-const graph = input.map((row) => row.split('').map(Number));
+class Queue {
+	constructor() {
+		this.storage = {};
+		this.front = 0;
+		this.rear = 0;
+	}
+	size() {
+		if (this.storage[this.rear] === undefined) {
+			return 0;
+		} else {
+			return this.rear - this.rear + 1;
+		}
+	}
+	push(value) {
+		if (this.size() === 0) {
+			this.storage['0'] = value;
+		} else {
+			this.rear += 1;
+			this.storage[this.rear] = value;
+		}
+	}
 
+	shift() {
+		let temp;
+		if (this.front === this.rear) {
+			temp = this.storage[this.front];
+			delete this.storage[this.front];
+			this.front = 0;
+			this.rear = 0;
+		} else {
+			temp = this.storage[this.front];
+			delete this.storage[this.front];
+			this.front += 1;
+		}
+		return temp;
+	}
+}
 
-const bfs = (graph, start) => {
-  const dx = [0, 1, 0, -1];
-  const dy = [1, 0, -1, 0];
+const WAY = 1;
+const WALL = 0;
+const VISITED = 2;
 
-  const needVisit = [];
+const DX = [0, 1, 0, -1];
+const DY = [1, 0, -1, 0];
 
-  needVisit.push(start);
+const map = new Array(row).fill();
 
-  while (needVisit.length !== 0) {
-    const [y, x, stepCount] = needVisit.shift();
+for (let i = 0; i < input.length; i++) {
+	map[i] = input[i].split('').map(Number);
+}
 
-    if (y === graph.length - 1 && x === graph[0].length - 1) return stepCount;
+const bfs = () => {
+	const queue = new Queue();
+	queue.push([0, 0, 1]);
 
-    if (graph[y][x] !== 0) {
-      graph[y][x] = 0;
+	while (queue.size() > 0) {
+		const [y, x, walkCount] = queue.shift();
 
-      for (let i = 0; i < dx.length; i++) {
-        const nx = x + dx[i];
-        const ny = y + dy[i];
+		if (map[y][x] !== VISITED) {
+			if (y === row - 1 && x === col - 1) return walkCount;
 
-        if (ny >= 0 && nx >= 0 && ny <= graph.length - 1 && nx <= graph[0].length - 1 && graph[ny][nx] !== 0)
-          needVisit.push([ny, nx, stepCount + 1]);
-      }
-    }
-  }
+			map[y][x] = VISITED;
+			for (let i = 0; i < DX.length; i++) {
+				if (
+					![-1, row].includes(y + DY[i]) &&
+					![-1, col].includes(x + DX[i]) &&
+					map[y + DY[i]][x + DX[i]] === WAY
+				)
+					queue.push([y + DY[i], x + DX[i], walkCount + 1]);
+			}
+		}
+	}
 };
 
-console.log(bfs(graph, [0, 0, 1]));
+console.log(bfs());

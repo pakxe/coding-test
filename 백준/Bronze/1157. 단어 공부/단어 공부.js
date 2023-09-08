@@ -1,35 +1,18 @@
-let fs = require("fs");
-// let input = fs.readFileSync("example.txt").toString().trim();
-let input = fs.readFileSync("/dev/stdin").toString().trim();
+const fs = require('fs');
+// let input = fs.readFileSync('e.txt').toString().split('\n');
+let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+// const [a, b] = input[0].split(' ').map(Number);
 
-let arr = [];
-for (let i = 0; i < 26; i++) {
-  arr.push(0);
+const alphabetArr = new Array(26).fill(0);
+
+const strArr = input[0].toUpperCase();
+
+for (let i = 0; i < strArr.length; i++) {
+	alphabetArr[strArr[i].charCodeAt() - 65]++;
 }
 
-let alphabet = "";
+const max = Math.max(...alphabetArr);
 
-for (let i = 0; i < input.length; i++) {
-  alphabet = input.charCodeAt(i) - 65;
-  if (alphabet < 26) arr[alphabet]++;
-  else arr[alphabet - 32]++;
-}
-
-const max = Math.max(...arr);
-let both = 0;
-let index = 0;
-
-for (let i = 0; i < arr.length; i++) {
-  if (arr[i] === max) {
-    both++;
-    index = i;
-  }
-}
-
-if (both >= 2) console.log("?");
-else {
-  let a = String.fromCharCode(index + 65);
-  console.log(a);
-}
-
-//문제잘좀읽자;;;
+const index = alphabetArr.indexOf(max);
+if (index !== alphabetArr.lastIndexOf(max)) console.log('?');
+else console.log(String.fromCharCode(index + 65));

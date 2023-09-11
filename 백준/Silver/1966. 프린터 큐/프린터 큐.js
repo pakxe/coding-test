@@ -1,6 +1,5 @@
 const fs = require('fs');
 const input = fs.readFileSync('/dev/stdin').toString().split('\n');
-//const input = fs.readFileSync('e.txt').toString().split('\n');
 const testCaseCount = input[0];
 
 /*
@@ -95,24 +94,22 @@ const getPriorityTargetArr = (count, targetIndex, priorityArr) => {
 // [[1, false], [2, true], [3, false]] 형태로 정리된다.
 
 const getTargetPrintedOrder = (priorityTargetArr) => {
-	const queue = new Queue();
-
-	// shift 빨리 하기 위해 만든 큐에 넣기
-	priorityTargetArr.map(([priority, isTarget]) => {
-		queue.push([priority, isTarget]);
-	});
+	const queue = [...priorityTargetArr];
 
 	let printedOrder = 0;
 
 	while (1) {
+		const [priority, isTarget] = queue.shift();
+
 		// 우선 순위가 높은 문서가 뒤에 있다면
-		if (queue.haveLargerPriority()) {
-			const first = queue.shift();
-			queue.push(first);
+		if (
+			queue.filter(([anotherPriority, _]) => anotherPriority > priority)
+				.length !== 0
+		) {
+			queue.push([priority, isTarget]);
 		} else {
 			// 우선순위가 지금 0번째가 제일 크거나 같음
 			printedOrder++;
-			const [_, isTarget] = queue.shift();
 			if (isTarget) break;
 		}
 	}

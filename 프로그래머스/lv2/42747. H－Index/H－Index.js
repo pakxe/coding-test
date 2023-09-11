@@ -1,17 +1,16 @@
 function solution(citations) {
-    let i = 0; // i 이상인 논문의 개수
+    const min = Math.min(...citations);
+    const max = Math.max(...citations);
     
-    for(i = citations.length; i >= 0; i--) {
-        const overI = citations.filter(c => c >= i).length;
-        if(overI >= i) break;
+    for(let i = max; i >= 0; i--) {
+        const h = citations.filter((cost) => cost >= i);
+
+        if(h.length >= i) return i
     }
-    
-    return i;
 }
 
-/*
-i이상인 논문의 개수를 센다. 이 개수는 overI라고 한다. 
-이 overI가 i 보다 크면 멈춘다. 그게 조건이니까
+/**
+내림차순 정렬
+for를 도는데 0
 
 */
-

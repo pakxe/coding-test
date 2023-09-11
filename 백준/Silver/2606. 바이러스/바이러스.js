@@ -1,40 +1,36 @@
 const fs = require('fs');
-// let input = fs.readFileSync('./input.txt').toString().trim().split('\n');
-let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-const size = parseInt(input[0]); // 컴퓨터 개수
-const lines = parseInt(input[1]); // 라인 개수
-input.shift();
-input.shift();
+// let input = fs.readFileSync('e.txt').toString().split('\n');
+let input = fs.readFileSync('/dev/stdin').toString().split('\n');
+const comCount = parseInt(input[0]);
+const duoCount = parseInt(input[1]);
 
-const bfs = (graph, start) => {
-  let computerCount = 0;
-  const needVisit = [];
-  const visited = new Array(graph.length + 1).fill(0);
+const map = new Array(comCount + 1).fill().map(() => []);
 
-  needVisit.push(start);
+for (let i = 0; i < duoCount; i++) {
+	const [a, b] = input[i + 2].split(' ').map(Number);
 
-  while (needVisit.length !== 0) {
-    const computer = needVisit.shift();
+	map[a].push(b);
+	map[b].push(a);
+}
 
-    // 아직 확인하지 않은 컴퓨터
-    if (visited[computer] !== 1) {
-      visited[computer] = 1;
-      computerCount++;
+const bfs = () => {
+	const visited = new Array(comCount + 1).fill(false);
+	const queue = [];
+	let count = 0;
 
-      needVisit.push(...graph[computer]);
-    }
-  }
+	queue.push(1);
 
-  return computerCount - 1;
+	while (queue.length > 0) {
+		const node = queue.shift();
+
+		if (!visited[node]) {
+			visited[node] = true;
+			count++;
+			queue.push(...map[node].filter((n) => !visited[n]));
+		}
+	}
+
+	return count - 1;
 };
 
-const graph = new Array(size + 1).fill(0).map(() => []);
-
-input.forEach((relation) => {
-  const [a, b] = relation.split(' ').map(Number);
-
-  graph[a].push(b);
-  graph[b].push(a);
-});
-
-console.log(bfs(graph, 1));
+console.log(bfs());

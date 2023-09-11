@@ -38,4 +38,3 @@ input.forEach((relation) => {
 });
 
 console.log(bfs(graph, 1));
-

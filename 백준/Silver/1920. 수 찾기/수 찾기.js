@@ -1,27 +1,40 @@
-const fs = require("fs");
-let [n, a, m, b] = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+const fs = require('fs');
+const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
 
-a = a.split(" ").map(Number);
-b = b.split(" ").map(Number);
+const FIND = 1;
+const NOTFOUND = 0;
 
-a.sort((a, b) => a - b);
+const arr = input[1]
+	.split(' ')
+	.map(Number)
+	.sort((a, b) => a - b);
 
-let bs = function (arr, target, start, end) {
-  let mid = 0;
-  while (start <= end) {
-    mid = Math.trunc((start + end) / 2);
-    if (target === arr[mid]) return 1;
-    if (arr[mid] < target) start = mid + 1;
-    else end = mid - 1;
-  }
-  return 0;
+const result = [];
+
+const binarySearch = (start, end, target) => {
+	if (start > end) return NOTFOUND; // 못찾음
+
+	let middle = Math.floor((end + start) / 2); // 중간 좌표
+
+	if (target === arr[middle]) return FIND;
+	if (target < arr[middle]) return binarySearch(start, middle - 1, target);
+	if (target > arr[middle]) return binarySearch(middle + 1, end, target);
 };
 
-let str = "";
-let res = 0;
-for (let i = 0; i < m; i++) {
-  res = bs(a, b[i], 0, n - 1);
-  str += res + "\n";
+const needFindArr = input[3].split(' ').map(Number);
+
+for (let i = 0; i < parseInt(input[2]); i++) {
+	result.push(binarySearch(0, arr.length - 1, needFindArr[i]));
 }
 
-console.log(str);
+console.log(result.join('\n'));
+
+/*
+시간 초과가 관건인 문제같다. 
+
+분할 서치가 필요할 것 같다. 중복은 명시가 안되어있으니 있다고 가정하자. 
+
+입력받은 수를 배열에 추가하고. 찾아야하는 수로 순회한다. 
+
+find함수 필요
+*/

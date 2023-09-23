@@ -1,25 +1,15 @@
-const fs = require("fs");
-const input = fs
-  .readFileSync("/dev/stdin")
-  .toString()
-  .trim()
-  .split("\n")
-  .map(Number);
+const fs = require('fs');
+const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n').map(Number);;
+// const input = fs
+	
+	
 
-let m = 1;
+const mul = (input[0] * input[1] * input[2]).toString();
 
-input.forEach((e) => {
-  m *= e;
-});
+const count = new Array(10).fill(0);
 
-let str = m.toString();
-let arr = new Array(10);
-arr.fill(0);
-
-for (let i = 0; i < str.length; i++) {
-  arr[Number(str[i])]++;
+for (let i = 0; i < mul.length; i++) {
+	count[parseInt(mul[i])]++;
 }
 
-arr.forEach((e) => {
-  console.log(e);
-});
+console.log(count.join('\n'));

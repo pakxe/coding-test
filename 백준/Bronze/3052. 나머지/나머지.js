@@ -1,18 +1,13 @@
-let input = require('fs').readFileSync('dev/stdin').toString().split('\n');
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs')
+	.readFileSync(filePath)
+	.toString()
+	.trim()
+	.split('\n')
+	.map(Number);
 
-let arr = [];
-for(let i = 0; i < 10; i++){
-    arr.push(Number(input[i]));
-}
+const set = new Set();
 
-//let arr = [39, 40, 41, 42, 43, 44, 82, 83, 84, 85];
-let newarr = arr.map((a) => a % 42);
-newarr.sort((a, b)=> a-b); //오름차순
+input.forEach((n) => set.add(n % 42));
 
-let count = 1;
-for(let i = 1; i < 10; i++){
-    if(newarr[i-1] !==newarr[i] ){
-        count++;
-    }
-}
-console.log(count);
+console.log(set.size);

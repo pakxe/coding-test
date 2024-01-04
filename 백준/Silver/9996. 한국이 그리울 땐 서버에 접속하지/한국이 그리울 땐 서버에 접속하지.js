@@ -1,55 +1,48 @@
 const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
-const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
-
-const count = Number(input.shift());
-const pattern = input.shift();
-const files = input;
+const input = require('fs').readFileSync(filePath).toString().split('\n');
 
 const [MATCH, NON_MATCH] = ['DA', 'NE'];
+
+const count = Number(input.shift());
+
+/*
+패턴은 앞과 뒤로 나뉜다. 
+이 앞과 뒤가 주어지는 파일 명에 모두 포함되어야 한다. 
+다만 주의할 점은 앞, 뒤가 일치하는 경우 하나만 있어도 패턴으로 인정될 수 있다는 것이다. 
+
+매치를 앞, 뒤로 나눠서 해야할 것 같다. 
+
+앞 매치 확인
+    문자열.indexOf로 판단함
+    if(인덱스 -1 또는 0이 아니라면) 낫매치 출력하고 종료
+    
+뒤 매치 확인
+    indexOf로 얻은 인덱스 + 앞 매치 문자 길이 부터 slice한 문자 만들기
+    슬라이스한 문자열을 하나씩 잘라 뒤집고 다시 이어붙인다.
+    슬라이스 문자열.indexOf로 존재 판단.
+    if(인덱스 -1 또는 0이 아니라면) 낫매치 출력하고 종료
+*/
+
+const [start, end] = input.shift().split('*');
 const answers = [];
 
-const [start, end] = pattern.split('*');
+for (let i = 0; i < count; i++) {
+  const str = input[i];
 
-function isMatch(str, pattern) {
-  return str.includes(pattern);
-}
-
-function getLocationOfPatternInStart(str, pattern) {
-  return str.indexOf(pattern);
-}
-
-function getLocationOfPatternInEnd(str, pattern) {
-  return str.lastIndexOf(pattern);
-}
-
-files.forEach((file) => {
-  if (!isMatch(file, start) || !isMatch(file, end)) {
+  const startMatchIndex = str.indexOf(start);
+  if (startMatchIndex !== 0) {
     answers.push(NON_MATCH);
-    return;
+    continue;
   }
 
-  const startIndex = getLocationOfPatternInStart(file, start);
-  const remainedFileName = file.slice(start.length);
-  let endIndex = getLocationOfPatternInEnd(remainedFileName, end);
-
-  if (endIndex === -1) {
+  const remainedStr = str.slice(start.length);
+  const endMatchIndex = remainedStr.lastIndexOf(end);
+  if (endMatchIndex + start.length !== str.length - end.length) {
     answers.push(NON_MATCH);
-    return;
+    continue;
   }
-  endIndex = endIndex - remainedFileName.length + end.length;
 
-  if (startIndex === 0 && endIndex === 0) answers.push(MATCH);
-  else answers.push(NON_MATCH);
-});
+  answers.push(MATCH);
+}
 
 console.log(answers.join('\n'));
-
-/**
-패턴: 별표 1개 + 알파벳 소문자(이건 몇개일지 모름)
-가능한 패턴: ab*c 뭐 이런.. 별은 패턴 양 끝에는 존재할 수 없음
-
-별표의 앞 문자와 일치하는 인덱스 < 별표의 끝 문자와 일치하는 인덱스 라면 패턴일치
-다만 이 인덱스 체크를 함수로 해서 -1을 반환하지 않도록 해야할 것 같음. 
-
-
-*/

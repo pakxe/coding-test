@@ -1,21 +1,14 @@
 const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
-const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
-const heightList = input.map(Number);
+const heightList = require('fs').readFileSync(filePath).toString().trim().split('\n').map(Number);
 
-/**
- * 조합이 필요할 것 같다.
- *
- * 조합을 모두 구하고 그 조합 인덱스 대로 초록 난재읻들의 키를 합하고 100이 되는 순간 반복을 종료한다
- *
- */
-
-const PEOPLE = 9;
-const DWARF = 7;
+/*
+조합을 구해서 해야겠다.
+*/
 
 const temp = [];
 const combArr = [];
 
-const combination = (n, r, depth) => {
+function comb(n, r, depth) {
   if (temp.length === r) {
     combArr.push([...temp]);
     return;
@@ -23,33 +16,21 @@ const combination = (n, r, depth) => {
 
   for (let i = depth; i < n; i++) {
     temp.push(i);
-    combination(n, r, i + 1);
+    comb(n, r, i + 1);
     temp.pop();
   }
-};
+}
 
-combination(PEOPLE, DWARF, 0);
+comb(9, 2, 0);
 
-const getHeight = (indexArr) => {
-  const result = [];
-
-  indexArr.forEach((index) => {
-    result.push(heightList[index]);
-  });
-
-  return result;
-};
-
-let answer;
-
-combArr.forEach((comb) => {
-  const selectedHeight = getHeight(comb);
-
-  const sum = selectedHeight.reduce((sum, cur) => sum + cur, 0);
-
+let answer = [];
+for (let i = 0; i < combArr.length; i++) {
+  const pickedHeights = heightList.filter((cur, idx) => !combArr[i].includes(idx));
+  const sum = pickedHeights.reduce((sum, cur) => sum + cur, 0);
   if (sum === 100) {
-    answer = selectedHeight;
+    answer = pickedHeights.sort((a, b) => a - b);
+    break;
   }
-});
+}
 
-console.log(answer.sort((a, b) => a - b).join('\n'));
+console.log(answer.join('\n'));

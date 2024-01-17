@@ -1,60 +1,82 @@
-const fs = require('fs');
-// let input = fs.readFileSync('e.txt').toString().trim().split('\n');
-let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-const rowCount = parseInt(input.shift());
+/*
+비의 양에 따라 일정한 높이 "이하"의 모든 지점은 물에 잠긴다. 
 
-for (let i = 0; i < rowCount; i++) {
-	input[i] = input[i].split(' ').map(Number);
+높이는 1 <= N <= 100
+
+따라서 1이상 100이하의 모든 수에 대해서 bfs를 수행해야한다. 
+
+하나의 맵에 대해 이 값이상이면 bfs수행 이런식으로 해야한다. 
+배열을 복사해서 넘기고 방문한 것은 0(VISITED)로 바꿔가면서 하는게 좋을 것 같다.
+일단 map을 만든다.
+
+let max = -무한
+for 1~100 
+    맵 복제
+    let 카운트
+    for y
+        for x
+            만약 지금 값이 i이상이라면 bfs 수행 
+            count++
+    
+    max = Math.max(max, count);
+
+*/
+
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs').readFileSync(filePath).toString().split('\n');
+
+const VISITED = 0;
+const [MIN, MAX] = [1, 100];
+const DX = [0, 1, 0, -1];
+const DY = [1, 0, -1, 0];
+
+const size = Number(input.shift());
+const map = new Array(size).fill();
+
+function bfs(map, height, start) {
+  const [sy, sx] = start;
+  const queue = [[sy, sx]];
+  map[sy][sx] = VISITED;
+
+  while (queue.length !== 0) {
+    const [y, x] = queue.shift();
+
+    for (let i = 0; i < DX.length; i++) {
+      if (
+        y + DY[i] >= 0 &&
+        y + DY[i] < map.length &&
+        x + DX[i] >= 0 &&
+        x + DX[i] < map.length &&
+        map[y + DY[i]][x + DX[i]] >= height &&
+        map[y + DY[i]][x + DX[i]] !== VISITED
+      ) {
+        queue.push([y + DY[i], x + DX[i]]);
+        map[y + DY[i]][x + DX[i]] = VISITED;
+      }
+    }
+  }
 }
 
-const bfs = (map, start, rain, visited) => {
-	const queue = [];
+for (let i = 0; i < size; i++) {
+  map[i] = input[i].split(' ').map(Number);
+}
 
-	let count = 0;
+let max = -Infinity;
 
-	queue.push(start);
+for (let height = MIN; height <= MAX; height++) {
+  let count = 0;
+  const curMap = map.map((row) => [...row]);
 
-	while (queue.length !== 0) {
-		const [ny, nx] = queue.shift(); // 앞에서 빼내기
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      if (curMap[row][col] >= height) {
+        bfs(curMap, height, [row, col]);
+        count += 1;
+      }
+    }
+  }
 
-		if (visited[ny][nx] === false) {
-			visited[ny][nx] = true;
-
-			const around = [
-				[ny - 1, nx],
-				[ny, nx + 1],
-				[ny + 1, nx],
-				[ny, nx - 1],
-			];
-
-			for (let i = 0; i < 4; i++) {
-				const [y, x] = [around[i][0], around[i][1]];
-
-				if (!around[i].includes(-1) && !around[i].includes(rowCount)) {
-					if (!visited[y][x] && map[y][x] > rain) queue.push(around[i]);
-				}
-			}
-		}
-	}
-};
-
-let count = 0;
-let max = 0;
-for (let rain = 0; rain <= 100; rain++) {
-	const visited = new Array(rowCount)
-		.fill()
-		.map(() => new Array(rowCount).fill(false));
-	for (let i = 0; i < rowCount; i++) {
-		for (let j = 0; j < rowCount; j++) {
-			if (input[i][j] > rain && !visited[i][j]) {
-				bfs(input, [i, j], rain, visited);
-				count++;
-			}
-		}
-	}
-
-	max = count > max ? count : max;
-	count = 0;
+  max = Math.max(max, count);
 }
 
 console.log(max);

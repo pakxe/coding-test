@@ -1,13 +1,9 @@
-const fs = require("fs");
-let [a, b] = fs
-  .readFileSync("/dev/stdin")
-  .toString()
-  .trim()
-  .split(" ")
-  .map(Number);
+const input = require('fs').readFileSync('/dev/stdin').toString().split('\n');
 
-console.log(a + b);
-console.log(a - b);
-console.log(a * b);
-console.log(Math.floor(a / b));
-console.log(a % b);
+const [A, B] = input[0].split(' ').map(Number);
+
+console.log(A + B);
+console.log(A - B);
+console.log(A * B);
+console.log(Math.floor(A / B));
+console.log(A % B);

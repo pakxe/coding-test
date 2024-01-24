@@ -1,13 +1,8 @@
 const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
-const input = require('fs')
-	.readFileSync(filePath)
-	.toString()
-	.trim()
-	.split('\n');
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
 
-input.shift();
+const N = Number(input[0]);
+const nums = input[1].split(' ').map(Number);
 
-console.log(
-	Math.min(...input[0].split(' ').map(Number)),
-	Math.max(...input[0].split(' ').map(Number))
-);
+const [min, max] = [Math.min(...nums), Math.max(...nums)];
+console.log(min, max);

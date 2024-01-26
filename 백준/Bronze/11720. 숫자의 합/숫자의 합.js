@@ -1,12 +1,10 @@
-const fs = require("fs");
-const input = fs.readFileSync("/dev/stdin").toString().trim().split('\n');
+const input = require('fs')
+  .readFileSync(process.platform === 'linux' ? '/dev/stdin' : 'e.txt')
+  .toString()
+  .trim()
+  .split('\n');
 
-let n = input[0];
-let str = input[1];
+const N = Number(input[0]);
+const nums = input[1].split('').map(Number);
 
-let sum = 0;
-for(let i = 0; i < n; i++){
-    sum += Number(str[i]);
-}
-console.log(sum);
-
+console.log(nums.reduce((sum, cur) => sum + cur, 0));

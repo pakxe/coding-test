@@ -38,28 +38,28 @@ n까지 이 행동을 반복해 인수로써 2, 5가 각각 몇개 존재하는�
 5. (풀이를 봐버렸다..) 2의 배수로 나누어 주고 나눠 떨어진다면 그것은 2가 들어가는 수..
 */
 
-function getZeroCount(n) {
-  let [two, five] = [0, 0];
-
-  for (let i = 2; i <= n; i *= 2) two += Math.trunc(n / i);
-  for (let i = 5; i <= n; i *= 5) five += Math.trunc(n / i);
-
-  return Math.min(two, five);
-}
 
 const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
 const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
 
 const T = Number(input[0]);
 
+function getFiveCount(n) {
+  let five = 0;
+
+  for (let i = 5; i <= n; i *= 5) five += Math.trunc(n / i);
+
+  return five;
+}
+
 const answers = [];
 
 for (let i = 1; i <= T; i++) {
   const num = input[i]; // Number
 
-  const zeroCount = getZeroCount(num);
+  const fiveCount = getFiveCount(num);
 
-  answers.push(zeroCount);
+  answers.push(fiveCount);
 }
 
 console.log(answers.join('\n'));

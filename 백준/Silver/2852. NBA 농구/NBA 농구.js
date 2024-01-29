@@ -48,11 +48,9 @@ function secToTimeStr(onlySec) {
 let scores = [0, 0];
 let times = [0, 0]; //초로만 다루자
 // 초기화 작업
-const [firstGoalTeam, firstGoalTime] = input[1].split(' ');
-let lastTime = timeToSec(firstGoalTime);
-scores[firstGoalTeam - 1] += 1;
+let lastTime = 0;
 
-for (let i = 2; i <= count + 1; i++) {
+for (let i = 1; i <= count + 1; i++) {
   // 마지막에 push 한 48:00까지 도달
   let [goalTeam, goalTime] = input[i].split(' ');
   goalTime = timeToSec(goalTime);

@@ -30,7 +30,7 @@ const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
 const [N] = require('fs').readFileSync(filePath).toString().trim().split('\n').map(Number);
 
 const arr = [];
-for (let i = 1; ; i++) {
+for (let i = 666; ; i++) {
   // console.log(arr);
   if (arr.length === N) break;
 

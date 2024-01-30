@@ -1,34 +1,44 @@
-const fs = require('fs');
-// let input = fs.readFileSync('e.txt').toString().trim().split('\n');
-let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-// const LINE_COUNT = parseInt(input.shift());
+/*
+괄호와 매우 유사한 문제
 
-const OPEN = ['(', '['];
-const CLOSE = [')', ']'];
+마찬가지로 스택 안에는 OPEN만 들어간다.
+*/
 
-const SUCCESS = 'yes';
-const FAIL = 'no';
+const [VALID, INVALID] = ['yes', 'no'];
+const [SMALL_OPEN, SMALL_CLOSE] = ['(', ')'];
+const [BIG_OPEN, BIG_CLOSE] = ['[', ']'];
 
-const isValidPS = (str) => {
-	const stack = [];
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs').readFileSync(filePath).toString().split('\n');
 
-	for (let i = 0; i < str.length; i++) {
-		if (OPEN.includes(str[i])) stack.push(str[i]);
-		if (CLOSE.includes(str[i])) {
-			const stackTop = stack[stack.length - 1];
-
-			if (stack.length === 0) return false;
-
-			if (stackTop === OPEN[0] && str[i] === CLOSE[0]) stack.pop();
-			else if (stackTop === OPEN[1] && str[i] === CLOSE[1]) stack.pop();
-			else return false;
-		}
-	}
-
-	return stack.length !== 0 ? false : true;
-};
+const answers = [];
 
 for (let i = 0; i < input.length; i++) {
-	if (input[i] === '.') return;
-	console.log(isValidPS(input[i]) ? SUCCESS : FAIL);
+  const str = input[i];
+
+  if (str === '.') break;
+
+  const stack = [];
+  let state = true;
+
+  for (let j = 0; j < str.length; j++) {
+    const cur = str[j];
+
+    if (cur === SMALL_OPEN || cur === BIG_OPEN) stack.push(cur);
+    else if ((cur === SMALL_CLOSE) & (stack[stack.length - 1] === SMALL_OPEN)) stack.pop();
+    else if (cur === BIG_CLOSE && stack[stack.length - 1] === BIG_OPEN) stack.pop();
+    else {
+      if (cur !== SMALL_OPEN && cur !== SMALL_CLOSE && cur !== BIG_OPEN && cur !== BIG_CLOSE)
+        continue;
+      else {
+        state = false;
+        break;
+      }
+    }
+  }
+
+  if (!state || stack.length !== 0) answers.push(INVALID);
+  else answers.push(VALID);
 }
+
+console.log(answers.join('\n'));

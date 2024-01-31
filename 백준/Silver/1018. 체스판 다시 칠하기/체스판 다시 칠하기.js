@@ -1,47 +1,59 @@
-const fs = require('fs');
-const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+/*
+시간이 넉넉하고 그렇게 50 - 8 => 42 * 42 가 최대라서 브루트 포스로 해도 될 것 같다.
+모든 경우에 대해서 자른 후 이 경우의 체스판을 다시 칠해야하는 개수를 구해 최소를 갱신한다.
+이때 왼쪽 위를 흰색으로 칠할지 검은색으로 칠할지도 구해야한다. (2번 계산해야한다는 뜻)
+*/
 
-const [row, col] = input[0].split(' ').map(Number);
-input.shift();
-/**
- * 시작 위치와 같은 색의 판은 거리가 짝수
- * 다른 판은 거리가 홀수이다.
- *
- * 거리가 홀수인 경우. W, B,,,
- * 흰색결정, -> 거리가 홀수인데 W인 경우 1, B인경우 0
- * 검은색 결정, -> 거리가 홀수인데 W인 경우 0, B인경우 1
- */
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
 
-const set = new Set();
+const [H, W] = input[0].split(' ').map(Number);
+const [H_MAX, W_MAX] = [8, 8];
+const [WHITE, BLACK] = ['W', 'B'];
 
-for (let sr = 0; sr < row - 8 + 1; sr++) {
-	for (let sc = 0; sc < col - 8 + 1; sc++) {
-		let [whiteStart, blackStart] = [0, 0];
+const map = new Array(H).fill();
 
-		for (let y = sr; y < sr + 8; y++) {
-			for (let x = sc; x < sc + 8; x++) {
-				const floor = input[y][x]; // 현재 발판
-				const distance = y - sr + (x - sc); // 거리
-				// console.log(y, x);
-				// console.log(y - sr + (x - sc));
-				// console.log(distance);
-
-				// 흰색스타트인데 현재 발판이 짝수에 블랙이라면 칠
-				// 흰색스타트인데 현재 발판이 홀수에 화이트라면 칠
-				if (
-					(distance % 2 === 0 && floor === 'B') ||
-					(distance % 2 === 1 && floor === 'W')
-				)
-					whiteStart++;
-				if (
-					(distance % 2 === 0 && floor === 'W') ||
-					(distance % 2 === 1 && floor === 'B')
-				)
-					blackStart++;
-			}
-		}
-		set.add(blackStart);
-		set.add(whiteStart);
-	}
+// 맵 초기화
+for (let i = 0; i < H; i++) {
+  const row = input[i + 1].split('');
+  map[i] = row;
 }
-console.log(Math.min(...set));
+
+// 번갈아가며 다시 칠하는 색의 개수
+// 거리가 홀수, 짝수임에 따라서 번갈아서 칠할 수 있을 것 같다.
+// 만약 시작 컬러가 white라면 짝수거리의 칸은 모두 white여야한다. 다르다면 개수 ++
+function getRepaintCount(startColor, sy, sx) {
+  let repaintCount = 0;
+
+  for (let y = sy; y < sy + 8; y++) {
+    for (let x = sx; x < sx + 8; x++) {
+      const distance = y - sy + (x - sx);
+      const curColor = map[y][x];
+
+      if ((distance & 1) === 1) {
+        // 홀수인 경우
+        if (startColor === WHITE && curColor === WHITE) repaintCount += 1;
+        if (startColor === BLACK && curColor === BLACK) repaintCount += 1;
+      } else {
+        // 짝수인 경우
+        if (startColor === WHITE && curColor === BLACK) repaintCount += 1;
+        if (startColor === BLACK && curColor === WHITE) repaintCount += 1;
+      }
+    }
+  }
+
+  return repaintCount;
+}
+
+let min = Infinity;
+
+for (let y = 0; y <= H - H_MAX; y++) {
+  for (let x = 0; x <= W - W_MAX; x++) {
+    const repaintCountWithBlack = getRepaintCount(BLACK, y, x);
+    const repaintCountWithWhite = getRepaintCount(WHITE, y, x);
+
+    min = Math.min(min, repaintCountWithBlack, repaintCountWithWhite);
+  }
+}
+
+console.log(min);

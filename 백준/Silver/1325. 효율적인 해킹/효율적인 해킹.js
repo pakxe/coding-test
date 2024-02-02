@@ -28,22 +28,21 @@ function dfs(start) {
       if (visited[friend]) continue;
 
       count += 1;
-
       stack.push(friend);
       visited[friend] = true;
     }
   }
 
-  // 여기까지 끝내면 최대 해킹 수를 구할 수 있다.
-
-  if (count > max) {
-    max = count;
-    maxArr = [start];
-  } else if (count === max) maxArr.push(start);
+  return count;
 }
 
 for (let i = 1; i <= COM_COUNT; i++) {
-  dfs(i);
+  const hackCount = dfs(i);
+
+  if (hackCount > max) {
+    max = hackCount;
+    maxArr = [i];
+  } else if (hackCount === max) maxArr.push(i);
 }
 
 console.log(maxArr.join(' '));

@@ -1,13 +1,21 @@
-const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
-const input = require('fs')
-	.readFileSync(filePath)
-	.toString()
-	.trim()
-	.split('\n')
-	.map(Number);
+const rl = require('readline').createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
-const set = new Set();
+const input = [];
 
-input.forEach((n) => set.add(n % 42));
+rl.on('line', (line) => {
+  input.push(line);
+}).on('close', () => {
+  solution();
+});
 
-console.log(set.size);
+function solution() {
+  const arr = [];
+  for (let i = 0; i < 10; i++) {
+    arr.push(Number(input[i]) % 42);
+  }
+
+  console.log(new Set([...arr]).size);
+}

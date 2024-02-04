@@ -1,48 +1,112 @@
 const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
-const input = require('fs')
-	.readFileSync(filePath)
-	.toString()
-	.trim()
-	.split('\n');
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
 
-const nodes = input[1].split(' ').map(Number);
+const nodeCount = Number(input[0]);
 
-const tree = new Array(parseInt(input[0])).fill().map(() => []);
-
-for (let i = 0; i < nodes.length; i++) {
-	if (nodes[i] === -1) continue;
-	tree[nodes[i]].push(i);
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.childList = [];
+  }
 }
 
-const bfs = (start) => {
-	const queue = [start];
-	const visited = new Array(parseInt(input[0])).fill(false);
-	visited[start] = true;
-
-	while (queue.length) {
-		const node = queue.shift();
-
-		for (const child of tree[node]) {
-			if (!visited[child]) {
-				visited[child] = true;
-				queue.push(child);
-			}
-		}
-	}
-
-	return visited;
-};
-
-let count = 0;
-const deletedNode = parseInt(input[2]);
-for (let i = 0; i < parseInt(input[0]); i++) {
-	if (bfs(deletedNode)[i]) continue;
-	if (tree[i].includes(parseInt(input[2]))) {
-		if (tree[i].length - 1 === 0) count++;
-	} else if (tree[i].length === 0) {
-		// 빈 배열 즉, 리프 노드라면
-		count++;
-	}
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-console.log(count);
+class Queue {
+  #head;
+  #tail;
+
+  constructor() {
+    this.size = 0;
+    this.#head = null;
+    this.#tail = null;
+  }
+
+  push(value) {
+    const node = new Node(value);
+
+    if (this.size === 0) this.#head = node;
+    else this.#tail.next = node;
+
+    this.#tail = node;
+
+    this.size += 1;
+  }
+
+  shift() {
+    if (this.size === 0) return -1;
+
+    const value = this.#head.value;
+
+    if (this.size === 1) {
+      this.#head = null;
+      this.#tail = null;
+    } else this.#head = this.#head.next;
+
+    this.size -= 1;
+
+    return value;
+  }
+}
+
+function bfs(start) {
+  let leafCount = 0;
+
+  const queue = new Queue();
+  queue.push(start);
+  const visited = new Array(nodeCount).fill(0);
+
+  while (queue.size) {
+    const node = queue.shift();
+    if (node.childList.length === 0) leafCount += 1;
+
+    node.childList.forEach((child) => {
+      visited[child.value] = 1;
+      queue.push(child);
+    });
+  }
+
+  return leafCount;
+}
+
+const parentList = input[1].split(' ').map(Number);
+let rootIndex;
+
+// 0번이 루트노드(-1)이라는 보장이 없다.
+const pointers = new Array(nodeCount).fill().map((_, i) => new TreeNode(i));
+
+for (let i = 0; i < parentList.length; i++) {
+  const parentIndex = parentList[i];
+
+  if (parentIndex === -1) {
+    rootIndex = i;
+    continue;
+  }
+  const child = pointers[i];
+
+  pointers[parentIndex].childList.push(child);
+}
+
+const deleteNode = Number(input[2]);
+
+if (deleteNode === rootIndex) { 
+  console.log(0);
+  return;
+}
+
+pointers.forEach((node) => {
+  const deleteNodeIndex = node.childList.findIndex((el) => el.value === deleteNode); // [좌표], []
+
+  if (deleteNodeIndex !== -1) node.childList.splice(deleteNodeIndex, 1);
+});
+
+// pointers.forEach((node) => console.log(node)); // 트리 출력
+
+const leafCount = bfs(pointers[rootIndex]);
+
+console.log(leafCount);

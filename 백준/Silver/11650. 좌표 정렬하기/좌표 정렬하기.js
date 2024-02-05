@@ -1,24 +1,19 @@
-const fs = require('fs');
-const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-const length = parseInt(input[0]);
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
 
-const coordinates = [];
+const n = Number(input[0]);
+input.shift();
 
-for (let i = 1; i < input.length; i++) {
-	coordinates.push(input[i].split(' ').map(Number));
-}
+input.sort((a, b) => {
+  const [ax, ay] = a.split(' ').map(Number);
+  const [bx, by] = b.split(' ').map(Number);
 
-const customSort = (a, b) => {
-	const [ax, ay] = a;
-	const [bx, by] = b;
+  if (ax > bx) return 1;
+  else if (ax < bx) return -1;
+  else if (ax === bx) {
+    if (ay > by) return 1;
+    else return -1;
+  }
+});
 
-	if (ax === bx) return ay - by;
-	else return ax - bx;
-};
-
-console.log(
-	coordinates
-		.sort(customSort)
-		.map((coordinate) => coordinate.join(' '))
-		.join('\n')
-);
+console.log(input.join('\n'));

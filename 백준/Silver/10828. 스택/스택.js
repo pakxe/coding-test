@@ -1,45 +1,84 @@
-const fs = require("fs");
-// let [n, ...input] = fs
-//   .readFileSync("example.txt")
-//   .toString()
-//   .trim()
-//   .split("\n");
-let [n, ...input] = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
-
-n = Number(n);
-
-let result = "";
-let arr = [];
-for (let i = 0; i < n; i++) {
-  let line = input[i].split(" ");
-
-  if (line[0] === "push") {
-    arr.push(Number(line[1]));
-  }
-
-  if (line[0] === "pop") {
-    if (arr.length === 0) result += `-1\n`;
-    else {
-      let top = arr.pop();
-      result += `${top}\n`;
-    }
-  }
-
-  if (line[0] === "size") {
-    result += `${arr.length}\n`;
-  }
-
-  if (line[0] === "empty") {
-    if (arr.length === 0) result += `1\n`;
-    else result += `0\n`;
-  }
-
-  if (line[0] === "top") {
-    if (arr.length === 0) result += `-1\n`;
-    else {
-      result += `${Number(arr[arr.length - 1])}\n`;
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
 
-console.log(result);
+class Queue {
+  #head;
+  #tail;
+
+  constructor() {
+    this.size = 0;
+    this.#head = null;
+    this.#tail = null;
+  }
+
+  push(value) {
+    const node = new Node(value);
+
+    if (this.size === 0) this.#head = node;
+    else this.#tail.next = node;
+
+    this.#tail = node;
+
+    this.size += 1;
+  }
+
+  pop() {
+    if (this.size === 0) return -1;
+
+    const value = this.#head.value;
+
+    if (this.size === 1) {
+      this.#head = null;
+      this.#tail = null;
+    } else this.#head = this.#head.next;
+
+    this.size -= 1;
+
+    return value;
+  }
+
+  isEmpty() {
+    return this.size === 0 ? 1 : 0;
+  }
+
+  front() {
+    if (this.size === 0) return -1;
+
+    return this.#head.value;
+  }
+
+  back() {
+    if (this.size === 0) return -1;
+
+    return this.#tail.value;
+  }
+}
+
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
+
+const n = Number(input[0]);
+const [PUSH, TOP, SIZE, POP, EMPTY] = ['push', 'top', 'size', 'pop', 'empty'];
+
+const stack = [];
+const answers = [];
+
+for (let i = 1; i <= n; i++) {
+  const command = input[i].split(' ');
+  const order = command[0];
+
+  if (command.length === 1) {
+    if (order === TOP) answers.push(stack.length !== 0 ? stack[stack.length - 1] : -1);
+    if (order === SIZE) answers.push(stack.length);
+    if (order === EMPTY) answers.push(stack.length === 0 ? 1 : 0);
+    if (order === POP) answers.push(stack.length === 0 ? -1 : stack.pop());
+  } else {
+    if (order === PUSH) stack.push(Number(command[1]));
+  }
+}
+
+console.log(answers.join('\n'));

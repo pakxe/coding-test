@@ -1,18 +1,27 @@
-const fs = require('fs');
-// let input = fs.readFileSync('e.txt').toString().split('\n');
-let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-// const [a, b] = input[0].split(' ').map(Number);
+const { CONNREFUSED } = require('dns');
 
-const alphabetArr = new Array(26).fill(0);
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
 
-const strArr = input[0].toUpperCase();
+const word = input[0];
 
-for (let i = 0; i < strArr.length; i++) {
-	alphabetArr[strArr[i].charCodeAt() - 65]++;
+const alphabet = new Array(26).fill(0);
+
+function getCharCode(cur) {
+  const ascii = cur.charCodeAt();
+
+  return ascii >= 97 ? ascii - 97 : ascii - 65;
 }
 
-const max = Math.max(...alphabetArr);
+for (let i = 0; i < word.length; i++) {
+  const cur = word[i];
+  const ascii = getCharCode(cur);
+  alphabet[ascii] += 1;
+}
 
-const index = alphabetArr.indexOf(max);
-if (index !== alphabetArr.lastIndexOf(max)) console.log('?');
-else console.log(String.fromCharCode(index + 65));
+const max = Math.max(...alphabet);
+const maxIndex = alphabet.indexOf(max);
+const sameCount = alphabet.filter((a) => a === max).length;
+
+if (sameCount > 1) console.log('?');
+else console.log(String.fromCharCode(maxIndex + 65));

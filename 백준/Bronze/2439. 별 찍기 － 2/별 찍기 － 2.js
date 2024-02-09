@@ -1,15 +1,11 @@
-const fs = require('fs');
-const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-// const input = fs.readFileSync('e.txt').toString().trim().split('\n');
-const n = parseInt(input[0]);
+const n = Number(require('fs').readFileSync('/dev/stdin').toString().trim().split('\n')[0]);
 
-const result = [];
+const answers = [];
 
-for (let i = 1; i <= n; i++) {
-	const empty = ' '.repeat(n - i);
-	const star = '*'.repeat(i);
-
-	result.push(empty + star);
+for(let i = 1; i <= n; i++) {
+    let curEmpty = ' '.repeat(n - i);
+    let curStar = '*'.repeat(i);
+    answers.push(curEmpty+curStar);
 }
 
-console.log(result.join('\n'));
+console.log(answers.join('\n'))

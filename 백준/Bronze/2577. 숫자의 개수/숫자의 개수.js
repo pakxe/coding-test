@@ -1,15 +1,8 @@
-const fs = require('fs');
-const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n').map(Number);;
-// const input = fs
-	
-	
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
 
-const mul = (input[0] * input[1] * input[2]).toString();
+const mux = input.reduce((sum, cur) => sum * Number(cur), 1).toString();
+const nums = new Array(10).fill(0);
+mux.split('').forEach((a) => nums[a] += 1);
 
-const count = new Array(10).fill(0);
-
-for (let i = 0; i < mul.length; i++) {
-	count[parseInt(mul[i])]++;
-}
-
-console.log(count.join('\n'));
+console.log(nums.join('\n'))

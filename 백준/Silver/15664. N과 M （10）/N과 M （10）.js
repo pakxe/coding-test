@@ -1,40 +1,34 @@
-const fs = require('fs');
-// const input = fs.readFileSync('e.txt').toString().trim().split('\n');
-const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-
-const [N, M] = input[0].split(' ').map(Number);
-const arr = input[1]
-	.split(' ')
-	.map(Number)
-	.sort((a, b) => a - b);
-
-// 중복 x 순서 상관 있음. M 길이의 수열
-// 사전 순으로 증가해야한다는 것은 순서가 상관 없다는 의미다.
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
 
 /*
-이어서 읽어야할 인덱스를 준다. 그리고 현재 길이
+왼쪽 상단에서 좌표를 시작한다. 다만 좌표는 1, 1부터 시작한다. 
 */
-const getSequence = (arr, lest) => {
-	// 길이를 넘으면 멈춘다.
-	if (lest === 1) return [...new Set(arr)].map((el) => [el]);
 
-	const result = [];
+const [count, maxLength] = input[0].split(' ').map(Number);
+const numbers = input[1]
+  .split(' ')
+  .map(Number)
+  .sort((a, b) => a - b);
 
-	[...new Set(arr)].forEach((cur, index) => {
-		const findIndex = arr.indexOf(cur);
-		const rest = arr.slice(findIndex + 1);
+const temp = [];
+const resultList = [];
+function bt(idx) {
+  if (temp.length === maxLength) {
+    resultList.push(temp.join(' '));
+    return;
+  }
 
-		const sequence = getSequence(rest, lest - 1);
-		result.push(...sequence.map((el) => [cur, ...el]));
-	});
+  let value = null;
+  for (let i = idx; i < count; i++) {
+    if (value === numbers[i]) continue;
+    value = numbers[i];
 
-	return result;
-};
+    temp.push(numbers[i]);
+    bt(i + 1);
+    temp.pop();
+  }
+}
 
-// const arr = new Array(N).fill().map((_, i) => i + 1);
-
-console.log(
-	getSequence(arr, M)
-		.map((arr) => arr.join(' '))
-		.join('\n')
-);
+bt(0);
+console.log(resultList.join('\n'));

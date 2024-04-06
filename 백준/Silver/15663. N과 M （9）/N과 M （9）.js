@@ -1,40 +1,44 @@
-const fs = require('fs');
-// const input = fs.readFileSync('e.txt').toString().trim().split('\n');
-const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-
-const [N, M] = input[0].split(' ').map(Number);
-const arr = input[1]
-	.split(' ')
-	.map(Number)
-	.sort((a, b) => a - b);
-
-// 중복 x 순서 상관 있음. M 길이의 수열
-// 사전 순으로 증가해야한다는 것은 순서가 상관 없다는 의미다.
-
 /*
-이어서 읽어야할 인덱스를 준다. 그리고 현재 길이
+이전 값이 아니라 같은 형제들 중에 이미 선택되었다면 걸린다. 
+
+그러면 형제들 중에 이미 같은 값이 선택되었다는 사실은 어떻게 확인할 수 있지?
+
 */
-const getSequence = (arr, lest) => {
-	// 길이를 넘으면 멈춘다.
-	if (lest === 1) return [...new Set(arr)].map((el) => [el]);
 
-	const result = [];
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
 
-	[...new Set(arr)].forEach((cur, index) => {
-		const findIndex = arr.indexOf(cur);
-		const rest = [...arr.slice(0, findIndex), ...arr.slice(findIndex + 1)];
+const [count, maxLength] = input[0].split(' ').map(Number);
 
-		const sequence = getSequence(rest, lest - 1);
-		result.push(...sequence.map((el) => [cur, ...el]));
-	});
+const numbers = input[1]
+  .split(' ')
+  .map(Number)
+  .sort((a, b) => a - b);
 
-	return result;
-};
+const temp = [];
+const resultList = [];
+const visited = new Array(count).fill(false);
 
-// const arr = new Array(N).fill().map((_, i) => i + 1);
+function bt() {
+  if (temp.length === maxLength) {
+    resultList.push(temp.join(' '));
+    return;
+  }
 
-console.log(
-	getSequence(arr, M)
-		.map((arr) => arr.join(' '))
-		.join('\n')
-);
+  let value = null;
+  for (let i = 0; i < count; i++) {
+    if (visited[i] === true) continue; // 이미 temp에 추가된 숫자
+    if (value === numbers[i]) continue;
+
+    value = numbers[i];
+    visited[i] = true;
+    temp.push(numbers[i]);
+    bt();
+    visited[i] = false;
+    temp.pop();
+  }
+}
+
+bt();
+
+console.log(resultList.join('\n'));

@@ -1,7 +1,10 @@
-const fs = require("fs");
-let [n, ...arr] = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
 
-arr.forEach((e) => {
-  let [a, b] = e.split(" ").map(Number);
-  console.log(a + b);
-});
+const count = parseInt(input[0]);
+
+for(let i = 1; i <= count; i++) {
+  const [a, b] = input[i].split(' ').map(Number);
+
+  console.log(a + b)
+}

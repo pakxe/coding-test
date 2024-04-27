@@ -1,10 +1,6 @@
-let input = require('fs').readFileSync('dev/stdin').toString().split(' ');
+const input = require('fs').readFileSync('/dev/stdin').toString().trim().split('\n');
 
-const n = Number(input[0]);
-
-let numbers = "";
-for (let i = 1; i <= n; i++) {
-    numbers = numbers + i + '\n';
+const num = parseInt(input[0]);
+for(let i = 0; i < num; i++) {
+    console.log(i + 1);
 }
-
-console.log(numbers);

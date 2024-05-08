@@ -1,11 +1,12 @@
-let fs = require("fs");
-let input = fs.readFileSync("/dev/stdin").toString().split(" ").map(Number);
+const input = require('fs').readFileSync('/dev/stdin').toString().trim().split('\n');
 
-let copyArr = [];
-input.forEach((e)=>{
-  copyArr.push(e);
-})
+const nums = input[0].split(' ').map(Number);
 
-if(JSON.stringify(input) == JSON.stringify(copyArr.sort())) console.log('ascending');
-else if(JSON.stringify(input) == JSON.stringify(copyArr.sort().reverse())) console.log('descending');
-else console.log('mixed');
+const ascendingArr = [...nums].sort((a, b) => a - b);
+const descendingArr = [...ascendingArr].reverse();
+
+
+if(ascendingArr.join(' ') === nums.join(' ')) console.log('ascending');
+else if(descendingArr.join(' ') === nums.join(' ')) console.log('descending');
+else console.log('mixed')
+//ascending, descending, mixed 

@@ -1,8 +1,13 @@
-const fs = require("fs");
-let year = fs.readFileSync("/dev/stdin").toString().trim();
+function calc(a, b, operator) {
+    if(operator === '+') return a + b;
+    if(operator === '-') return a - b;
+    if(operator === '*') return a * b;
+}
 
-year = Number(year);
+const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
+const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
 
-if((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) console.log(1);
-else console.log(0);
+const year = parseInt(input[0]);
+const 윤년여부 = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 
+console.log(윤년여부 ? 1 : 0)

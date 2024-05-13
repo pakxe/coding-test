@@ -1,21 +1,16 @@
-const fs = require('fs');
-//let input = fs.readFileSync('e.txt').toString().split('\n');
-let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-const testCount = parseInt(input[0]);
-input.shift();
+const input = require('fs').readFileSync('/dev/stdin').toString().trim().split('\n');
 
-const result = [];
+const count = parseInt(input[0]);
 
-for (let i = 0; i < input.length; i++) {
-	const [h, w, n] = input[i].split(' ').map(Number);
-	const ho = Math.ceil(n / h); // 호수
-	const floor = n % h === 0 ? h : n % h;
+for(let i = 1; i <= count; i++) {
+    const [h, w, n] = input[i].split(' ').map(Number);
+    
+    // 아래에서부터 위로 쌓아지는 형태이다. 
+    // 101 201 301.. h까지
 
-	result.push(
-		`${floor}${
-			w.toString().length === 2 && ho.toString().length === 2 ? ho : '0' + ho
-		}`
-	);
+    // 자연수인 경우..
+    const x = Math.floor(n / h) === n / h ? n / h : Math.floor(n / h) + 1
+    const y = n % h === 0 ? h : n % h
+
+    console.log(`${y}${x.toString().padStart(2, '0')}`);
 }
-
-console.log(result.join('\n'));

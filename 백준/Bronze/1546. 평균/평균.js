@@ -1,9 +1,9 @@
-const fs = require('fs');
-const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+const input = require('fs').readFileSync('/dev/stdin').toString().trim().split('\n');
 
 const count = parseInt(input[0]);
-const subs = input[1].split(' ').map(Number);
+const scores = input[1].split(' ').map(Number);
+const max = Math.max(...scores);
 
-const max = Math.max(...subs);
-
-console.log(subs.reduce((sum, cost) => sum + (cost / max) * 100, 0) / count);
+const newScores = scores.map((score) => score/max * 100);
+ 
+console.log(newScores.reduce((sum, cur) => sum + cur, 0) / count);

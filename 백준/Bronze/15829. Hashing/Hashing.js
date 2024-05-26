@@ -1,25 +1,14 @@
-const filePath = process.platform === 'linux' ? '/dev/stdin' : 'e.txt';
-const input = require('fs').readFileSync(filePath).toString().trim().split('\n');
+const fs = require('fs');
+const [n, str] = fs.readFileSync("./dev/stdin").toString().trim().split("\n");
 
-const r = 31;
-const m = 1234567891
-
-const strLength = parseInt(input[0]);
-const str = input[1];
-
-let sum = BigInt(0);
-for(let i = 0; i < str.length; i++) {
-    const ascii = str[i].charCodeAt() - 96;
-
-    // console.log(ascii, r, i)
-    const hash = BigInt(ascii * (r ** i));
-    
-    sum += hash;
+const N = +n
+let hash = 0;
+let r = 1;
+for (let i = 0; i < N; i++) {
+  hash += (str.charCodeAt(i) - 96) * r
+  hash %= 1234567891;
+  r *= 31
+  r %= 1234567891;
 }
 
-const answer = sum % BigInt(m);
-console.log(answer.toString())
-
-/*
-아스키 * 31^(현재 인덱스)
-*/
+console.log(hash)

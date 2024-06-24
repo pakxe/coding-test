@@ -1,73 +1,99 @@
-/*
-while로 반복한다. 
-2중 while로 만약 템프탑과 답안 탑이 같지 않으면 push
-2중 while로 만약 템프탑과 답안 탑이 같다면 pop() 
-이때 답안 탑을 가리키는 인덱스를 둔다.
-템프로 인덱스를 따로 빼야할 것 같다, 
+const input = require('fs').readFileSync('/dev/stdin').toString().trim().split('\n');
 
-만약 더이상 푸시할 게 없는데(템프 인덱스 끝) 템프탑과 인덱스 탑이 다르다면 불가능이다. 
+const [PUSH, POP] = ['+', '-'];
+const INVALID = 'NO';
+
+/*
+그냥 순열의 그래프가 공장 모양 그래프면 가능한 것같다.
+
+스택의 push하는 값들은 그냥 1부터 n까지의 오름차순
+
+pop한 순서대로 주어진 수열을 만족할 수 있는지 판단해야한다.
+
+수열을 읽고 있는 커서 인덱스를 let으로 두어야 한다. 
+스택에 넣어야 하는 값도 let으로 두어야 한다.
+
+스택의 탑이 비어있다면 push한다. 
+수열 커서보다 스택 커서가 작다면 push한다.
+
+스택의 탑이 수열 커서와 똑같다면 pop한다.
+스택의 탑이 수열 커서보다 크다면 pop한다.
+
+만약 수열 커서가 남아있는데 스택이 비워져있다면 스택으로 만들 수 없는 것
 */
 
-const fs = require('fs');
-// let input = fs.readFileSync('e.txt').toString().split('\n');
-let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-const max = parseInt(input[0]);
+const n = Number(input[0]);
 
-const answerStack = [];
-
-for (let i = 1; i < input.length; i++) {
-	answerStack.push(parseInt(input[i])); // 정답 스택 저장하기
-}
-
-const IMPOSSIBLE = 'NO';
-
-const PUSH = '+';
-const POP = '-';
+const answers = input.slice(1).map(Number)
+let answersIndex = 0;
 
 const stack = [];
-let needPush = 1;
+let stackIndex = 1;
 
-let answerTopIdx = 0;
-// let answerTop = answerStack[answerTopIdx];
+const results = [];
+let isInvalid = false;
 
-let isImpossible = false;
+while (true) {
+    // 성공
+    if(answersIndex === n && stackIndex === n + 1) break;
+    
+    // 스택이 길이가 없거나, 수열 커서보다 스택 탑이 작다면 push
+    if(stack.length === 0 || stack[stack.length - 1] < answers[answersIndex]) {
+        stack.push(stackIndex);
+        stackIndex++;
+        
+        results.push(PUSH);
+    }
+    
+    if(stack[stack.length - 1] === answers[answersIndex]) {
+        stack.pop();
+        answersIndex++;
+        
+        results.push(POP);
+    }
 
-const result = [];
+    if(stack[stack.length - 1] > answers[answersIndex]) {
+        // console.log(stack, answers[answersIndex])
+        isInvalid = true;
+        break;
+    }
+    
+    // 모든 수를 넣은 상태에서 스택의 탑과 수열 수가 일치하지 않는 경우
+    if(stackIndex === n + 1 && (stack[stack.length - 1] !== answers[answersIndex])) {
+        isInvalid = true;
+        break;
+    }
 
-while (1) {
-	if (needPush > max && answerTopIdx >= max) {
-		break;
-	}
+    /*
+    뽑아야하는 수와 수열 수가 일치하지 않는 경우에 대해서 다뤄지지 않고 있다.
 
-	if (needPush > max && stack[stack.length - 1] !== answerStack[answerTopIdx]) {
-		isImpossible = true;
-		break;
-	}
+    일치하지 않는 경우 1 = 수열 수보다 스택 탑이 큰 경우) 뽑는다.
+    일치하지 않는 경우 2 = 수열 수보다 스택 탑이 작은 경우) push한다.
 
-	// 탑이 일치하지 않는 경우
-	if (
-		stack.length === 0 ||
-		stack[stack.length - 1] !== answerStack[answerTopIdx]
-	) {
-		stack.push(needPush);
-		needPush++;
-		result.push(PUSH);
-	}
+    
 
-	// 탑이 일치하는 경우
-	else if (stack[stack.length - 1] === answerStack[answerTopIdx]) {
-		stack.pop();
-		answerTopIdx++;
-		result.push(POP);
-	}
+    
+    
+     
+    */
+
+    /*
+    console.log(stack);
+    console.log(results + '\n');
+    */
 }
 
-if (isImpossible) console.log(IMPOSSIBLE);
-else console.log(result.join('\n'));
+console.log(isInvalid ? INVALID : results.join('\n'))
+
 
 /*
-    스택에 푸시할 수.
-    
-    스택의 탑과 정답의 탑을 비교하여 다르면 push, 같으면 pop 한다. 
-    만약 더이상 push할게 없는데 스택의 탑과 정답의 탑이 다르면 중단하고 실패 출력
+5
+4
+1
+3
+2
+5
+
+
+
 */

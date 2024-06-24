@@ -52,48 +52,11 @@ while (true) {
         results.push(POP);
     }
 
+    // 스택의 탑과 수열 수가 일치하지 않는 경우
     if(stack[stack.length - 1] > answers[answersIndex]) {
-        // console.log(stack, answers[answersIndex])
         isInvalid = true;
         break;
     }
-    
-    // 모든 수를 넣은 상태에서 스택의 탑과 수열 수가 일치하지 않는 경우
-    if(stackIndex === n + 1 && (stack[stack.length - 1] !== answers[answersIndex])) {
-        isInvalid = true;
-        break;
-    }
-
-    /*
-    뽑아야하는 수와 수열 수가 일치하지 않는 경우에 대해서 다뤄지지 않고 있다.
-
-    일치하지 않는 경우 1 = 수열 수보다 스택 탑이 큰 경우) 뽑는다.
-    일치하지 않는 경우 2 = 수열 수보다 스택 탑이 작은 경우) push한다.
-
-    
-
-    
-    
-     
-    */
-
-    /*
-    console.log(stack);
-    console.log(results + '\n');
-    */
 }
 
 console.log(isInvalid ? INVALID : results.join('\n'))
-
-
-/*
-5
-4
-1
-3
-2
-5
-
-
-
-*/

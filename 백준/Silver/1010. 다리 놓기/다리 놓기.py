@@ -1,24 +1,38 @@
-import sys
-import math
+"""
+1. 팩토리얼로 Comb 구현
+2. 그냥 comb사용
+3. dp
+"""
 
+"""
+1. 팩토리얼로 Comb 구현
+
+mCn = m개 중에 n개 선택
+큰 수가 앞에 온다.
+
+m!
+n!(m - n)!
+"""
+
+import sys
 input = sys.stdin.readline
 
-# def comb(si):
-#     global temp, siteCount, n, m
-    
-#     if len(temp) == n:
-#         siteCount += 1
-#         return
-    
-#     for i in range(si, m):
-#         temp.append(i)
-#         comb(i + 1)
-#         temp.pop()
 
-testCount = int(input().strip())
+def factorial (i):
+    res = 1
+    for i in range(2, i + 1):
+        res *= i
+    return res
 
-for _ in range(testCount):
-    temp = []
-    siteCount = 0
-    n, m = map(int, input().strip().split())
-    print(math.comb(m, n))
+
+test_count = int(input())
+
+for _ in range(test_count):
+    n, m = list(map(int, input().split())) # m개 중에 n개 선택 
+
+    res = factorial(m) // (factorial(n) * factorial(m - n))
+    
+    print(res)
+
+
+    

@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: 9308 KB, 시간: 112 ms
+메모리: 31120 KB, 시간: 32 ms
 
 ### 분류
 
@@ -12,13 +12,13 @@
 
 ### 제출 일자
 
-2024년 7월 22일 02:37:38
+2024년 8월 15일 02:56:26
 
 ### 문제 설명
 
 <p>A pyramid of blocks is constructed by first building a base layer of n blocks and then adding n-1 blocks to the next layer. This process is repeated until the top layer only has one block.</p>
 
-<p style="text-align: center;"><img alt="" src="" style="width: 292px; height: 161px;"></p>
+<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/48ff31aa-5aeb-4608-b36d-88ce8d638750/-/preview/" style="width: 292px; height: 161px;"></p>
 
 <p>You must calculate the number of blocks needed to construct a pyramid given the size of the base. For example, a pyramid that has a base of size 4 will need a total of 10 blocks.</p>
 

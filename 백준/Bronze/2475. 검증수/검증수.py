@@ -1,9 +1,3 @@
-import sys
+numbers = list(map(int, input().split()))
 
-input = sys.stdin.readline
-
-nums = list(map(int, input().split()))
-
-checkNum = sum(list(map(lambda x: x ** 2, nums))) % 10
-
-print(checkNum)
+print(sum(map(lambda x: x**2, numbers)) % 10)

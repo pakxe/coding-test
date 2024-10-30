@@ -1,18 +1,6 @@
-import sys
+numbers = [int(input()) for _ in range(9)]
 
-input = sys.stdin.readline
-
-nums = []
-while True:
-    b = input().rstrip()
-
-    if b == '':
-        break;
-    nums.append(int(b))
-
-maxNum = max(nums)
-maxNumCount = nums.index(maxNum)
+maxNum = max(numbers)
 
 print(maxNum)
-print(maxNumCount + 1)
-
+print(numbers.index(maxNum) + 1)

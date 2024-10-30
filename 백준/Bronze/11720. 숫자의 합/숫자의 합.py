@@ -1,13 +1,10 @@
-import sys
-
-input = sys.stdin.readline
-
 n = int(input())
-nums = input().rstrip()
+number = input();
 
-numslist = []
-for i in range(len(nums)):
-    numslist.append(int(nums[i]))
-    
-print(sum(numslist))
+sum = 0
 
+for i in range(n):
+    cur = number[i]
+    sum += int(cur)
+
+print(sum)

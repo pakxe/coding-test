@@ -105,7 +105,8 @@ def hasValue(x):
         return 0
     return 1 if ns[hi] == x else 0
 
-mergeSort(0, n - 1) # 정렬
+# mergeSort(0, n - 1) # 정렬
+ns.sort()
 
 for i in range(m):
     print(hasValue(ms[i]))

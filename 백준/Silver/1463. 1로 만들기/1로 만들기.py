@@ -1,26 +1,41 @@
-import sys
+'''
+basecase 찾고, 다음 단계가 기계적으로 계산된다면 -> 증명 완료
 
+f(n) = n을 1로 만드는데 드는 최소 연산 횟수
+base: n = 1 -> 계산 필요 없으므로 0 
+step: n = i -> i가 3의 배수라면 
+
+이미 계산된 값일 경우 min으로 할당한다. 
+'''
+import sys
 input = sys.stdin.readline
+sys.setrecursionlimit(1000001)
 
 n = int(input())
+visited = [float('inf')] * (n + 1)
 
-dpArr = [0] * (n + 1)
+def makeOne(x):
 
-dpArr[0] = 0
-dpArr[1] = 0
+    if x == 1: 
+        return 0
 
-for i in range(2, n + 1):
-    validCountList = []
+    val = visited[x]
     
-    if i % 3 == 0:
-        validCountList.append(dpArr[i // 3])
-    if i % 2 == 0:
-        validCountList.append(dpArr[i // 2])
-    validCountList.append(dpArr[i - 1])
-    
-    minCount = min(validCountList)
-    
-    dpArr[i] = minCount + 1
+    if val != float('inf'):
+        return val
+
+    if x % 3 != 0 and x % 2 != 0: # 1밖에 방법이 없는 경우
+        val = makeOne(x - 1) + 1
+    elif x % 3 != 0: # 3만 안되는 경우
+        val = min(makeOne(x - 1) + 1, makeOne(x // 2) + 1)
+    elif x % 2 != 0: # 2만 안되는 경우 
+        val = min(makeOne(x - 1) + 1, makeOne(x // 3) + 1)
+    else: # 1만 안되는 경우
+        val = min(makeOne(x // 2) + 1, makeOne(x // 3) + 1)
 
 
-print(dpArr[n])
+    visited[x] = val
+    return val
+        
+print(makeOne(n))
+        

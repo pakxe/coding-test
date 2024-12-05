@@ -57,7 +57,7 @@ def dijkstra():
     while q:
         # 여기서 curFee는 누적 최소값이다.
         curFee, curStop, curBusNum, length = heapq.heappop(q)
-        
+
         for nextFee, nextStop, nextBusNum in m[curStop]:
             fee = (0 if curBusNum == nextBusNum else nextFee) + curFee
 
@@ -68,6 +68,10 @@ def dijkstra():
             dist[nextStop] = (fee, length + 1)
 
 dijkstra()
-print(' '.join(map(str, dist[end])))
+
+if dist[end][0] == float('inf'):
+    print('-1 -1')
+else:
+    print(' '.join(map(str, dist[end])))
 
 

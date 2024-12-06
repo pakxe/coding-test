@@ -9,22 +9,13 @@ a, b, c를 제외한 모든 정점에서의 다익스트라를 구하고, 최대
 '''
 
 '''
-시간복잡도는 어떻게 될까?
-모든 정점 * 한 번의 다익스트라 시간 복잡도
-
-모든 정점 = n
-한 번의 다익스트라 시간 복잡도(인접행렬) = 최소 구하기(n) * 최소의 인접 노드 구하기(n) = n^2
-
-최종 시간 복잡도 = n^3 
-1초에 1억 연산(10^8)을 할 수 있다고 한다면 (10^5)^3 => 10^15 이므로 초과함. 
-
-따라서 인접 행렬이 아닌 최소힙을 사용해야할듯. 
-한 번의 다익스트라 시간 복잡도(최소힙) = 최소 구하기(logn) * 최소의 인접 노드 구하기(n) = nlogn
-
-최종 시간 복잡도 = n^2logn => 10^
-
-이거 되나?
+위 방법은 100퍼 시간초과였다.
+생각해보니 특정 노드에서 다익을 모두 펼치면, 특정 노드에서 다른 특정 노드로 가는게 더 많고 정작 a, b, c는 극히 일부 시간만 차지않다. 불필요한 시간이 낭비된다는 뜻
+그래서 a, b, c에서 각각 다익스트라를 펼치면 정보 가용성이 100%가 된다. 
+그리고 for문을 돌려 특정 노드에서 a, b, c까지의 거리를 구한 후 min을 잡고 max를 갱신하면 되겠다.
 '''
+
+
 import heapq
 
 v, e = map(int, input().split())
@@ -33,6 +24,7 @@ v, e = map(int, input().split())
 graph = [[] for _ in range(v + 1)]
 
 targets = list(map(int, input().split()))
+
 
 for _ in range(e):
     n, m, cost = map(int, input().split())
@@ -56,17 +48,17 @@ def dijkstra(start):
                 heapq.heappush(q, (newCost, nextNode))
                 dist[nextNode] = newCost
 
-    a, b, c = targets
-    minDist = min(dist[a], dist[b], dist[c])
-    return minDist
+    return dist
 
-minDist = float('-inf')
+dists = [dijkstra(target) for target in targets]
+
+maxDist = float('-inf')
 
 for i in range(1, v + 1):
     if i in targets:
         continue
-        
-    minDist = max(minDist, dijkstra(i))
 
-print(minDist)
-            
+    curMinDist = min([dist[i] for dist in dists])
+    maxDist = max(curMinDist, maxDist)
+
+print(maxDist)

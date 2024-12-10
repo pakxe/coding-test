@@ -56,4 +56,5 @@ for i in range(1, n + 1):
 if minCost == float('inf'):
     print(-1)
 else:
+    print(minCost, R1_to_R2)
     print(minCost + R1_to_R2)

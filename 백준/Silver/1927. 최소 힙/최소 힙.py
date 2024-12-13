@@ -9,6 +9,9 @@ class MinHeap:
     def size(self):
         return len(self.heap)
     
+    def get(self):
+        return self.heap
+
     def push(self, value):
         self.heap.append(value)
         self.bubble_up()
@@ -54,22 +57,19 @@ class MinHeap:
         curValue = self.value(curIndex)
         
         while True:
-            leftChildIndex = curIndex * 2 + 1
-            rightChildIndex = curIndex * 2 + 2
             smallest = curIndex
-
-            if leftChildIndex < self.size() and self.value(leftChildIndex) < self.value(smallest):
-                smallest = leftChildIndex
-
-            if rightChildIndex < self.size() and self.value(rightChildIndex) < self.value(smallest):
-                smallest = rightChildIndex
-
-            if smallest == curIndex:
+            l = curIndex * 2 + 1
+            r = curIndex * 2 + 2
+            
+            if self.size() > l and self.value(l) < self.value(smallest):
+                smallest = l
+            if self.size() > r and self.value(r) < self.value(smallest):
+                smallest = r
+            if smallest != curIndex:
+                self.swap(smallest, curIndex)
+                curIndex = smallest
+            else:
                 break
-
-            self.swap(curIndex, smallest)
-            curIndex = smallest
-                
             
 
 minHeap = MinHeap()
@@ -83,4 +83,6 @@ for _ in range(n):
         print(minHeap.pop())
     else:
         minHeap.push(command)
+                
+
                 

@@ -1,2 +1,2 @@
-n = int(input());
-print(n % 20000303)
+a = int(input())
+print(a % 20000303)

@@ -1,5 +1,5 @@
-n = int(input())
-nums = list(map(int, input().split()))
-targetNum = int(input())
+input()
 
-print(nums.count(targetNum))
+lst = list(map(int, input().split()))
+target = int(input())
+print(lst.count(target))

@@ -1,2 +1,1 @@
-n = int(input())
-print(n/4)
+print(int(input()) / 4)

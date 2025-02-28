@@ -1,7 +1,6 @@
 n = int(input())
-
-nums = [];
-for i in range(n):
-    nums.append(int(input()))
+s = 0
+for _ in range(n):
+    s += int(input())
     
-print(sum(nums))
+print(s)

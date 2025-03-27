@@ -1,3 +1,2 @@
-w, h = list(map(int, input().split()))
-
-print((w * h) / 2)
+a, b = map(int, input().split())
+print( a * b / 2)

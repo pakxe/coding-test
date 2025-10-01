@@ -1,27 +1,32 @@
 def solution(numbers):
-    ans = [-1 for i in range(len(numbers))]
-    
-    s = []
-    for i in range(len(numbers)):
-        num = numbers[i]
+    range_map = []
+    for i in range(1, len(numbers)):
+        cur = numbers[i]
+        prev = numbers[i - 1]
         
-        if len(s) <= 0:
-            s.append((num, i)) # v, index
+        # 상승
+        if cur > prev:
+            range_map.append((i - 1, cur)) # limit_index, v
+    
+    map_cursor = 0
+    ans = []
+    for i in range(len(numbers)):
+        if map_cursor >= len(range_map):
+            ans.append(-1)
+            continue
             
+        limit_index, v = range_map[map_cursor]
+        
+        cur = numbers[i]
+        if v > cur:
+            ans.append(v)
         else:
-            while(True):
-                if len(s) <= 0:
-                    s.append((num, i))
-                    break
-                    
-                top_v, top_i = s[-1]
-                
-                if num > top_v:
-                    s.pop()
-                    ans[top_i] = num
-                    
-                else:
-                    s.append((num, i))
-                    break
-                    
+            ans.append(-1)
+        
+        if limit_index == i:
+            map_cursor += 1
+            
     return ans
+        
+            
+        

@@ -1,6 +1,6 @@
-select a.flavor
-from first_half as a
-inner join icecream_info as b
-on a.flavor = b.flavor
-where a.total_order > 3000 and b.ingredient_type = 'fruit_based'
-order by a.total_order desc
+SELECT a.flavor
+FROM first_half as a
+INNER JOIN icecream_info as b
+ON a.flavor = b.flavor
+WHERE a.total_order > 3000 AND b.ingredient_type = 'fruit_based'
+ORDER BY total_order DESC
